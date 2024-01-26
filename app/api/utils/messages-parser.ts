@@ -9,7 +9,7 @@ export const toThreadMessages = (
   if (messages) {
     _messages = messages.map((message: Message) => ({
       role: "user",
-      content: message.body,
+      content: message.body.toString(), // Convert the content to a string
     }));
   }
 
