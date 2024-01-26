@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
+import { cx } from "class-variance-authority";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,7 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body
+        className={cx(
+          inter.className,
+          "h-dvh fixed top-0 left-0 w-screen overflow-y-none"
+        )}
+      >
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

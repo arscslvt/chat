@@ -1,112 +1,178 @@
-import Image from "next/image";
+"use client";
+
+import Bubble, { BubbleWriting } from "@/components/bubble";
+import InputBar from "@/components/input-bar";
+import Toolbar from "@/components/toolbar";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+} from "@/components/ui/select";
+import { Message, useMessages } from "@/context/messages";
+import { openai_models } from "@/lib/models";
+import React, { useEffect } from "react";
+import dayjs from "dayjs";
+import { useParams } from "next/navigation";
+import { useAssistant } from "@/context/assistant";
+import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
 
 export default function Home() {
+  const { assistant, setAssistant } = useAssistant();
+  const [newAssistant, setNewAssistant] = React.useState<
+    keyof typeof openai_models | null
+  >(null);
+
+  const { thread, messages, isWriting, addMessage, getThread, resetThread } =
+    useMessages();
+
+  const params = useParams<{ id: string }>();
+
+  const [isEmpty, setIsEmpty] = React.useState<boolean>(true);
+
+  useEffect(() => {
+    if (messages.length > 0) setIsEmpty(false);
+    else setIsEmpty(true);
+  }, [messages]);
+
+  const handleMessage = (message: string) => {
+    const newMessage: Message = {
+      from: "sender",
+      body: [
+        {
+          type: "text",
+          text: {
+            value: message,
+          },
+        },
+      ],
+      name: "You",
+      timestamp: new Date(),
+    };
+
+    addMessage(newMessage);
+  };
+
+  useEffect(() => {
+    if (!params.id) {
+      resetThread();
+    }
+  }, [params.id, resetThread]);
+
+  const mainRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({
+      top: mainRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [mainRef, messages]);
+
+  const handleAssistantSwitch = (assistant: keyof typeof openai_models) => {
+    if (thread?.id) {
+      setNewAssistant(assistant as keyof typeof openai_models);
+    }
+
+    setAssistant(assistant as keyof typeof openai_models);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+    <main
+      className="flex items-center overflow-y-auto w-full min-h-dvh max-h-dvh flex-col"
+      ref={mainRef}
+    >
+      <div className="flex flex-col w-screen h-max items-center">
+        <Toolbar
+          title={thread?.metadata?.name ?? "Empty Thread"}
+          tooltip={
+            thread ? (
+              <p className="text-center">
+                ID: {thread?.id}
+                <br />
+                Created: {dayjs(thread?.created_at).format("MMMM D, YYYY")}
+              </p>
+            ) : (
+              "Type a message to start a new thread."
+            )
+          }
+          subtitle={
+            <Select
+              defaultValue={openai_models.lucas.id}
+              value={assistant}
+              onValueChange={(assistant) => handleAssistantSwitch(assistant)}
+            >
+              <SelectTrigger className="border-0 shadow-none text-muted-foreground outline-none h-6 focus:ring-0">
+                <span className="mr-1">
+                  Talking with {openai_models[assistant].display_name}
+                </span>
+              </SelectTrigger>
+              <SelectContent align="center">
+                {Object.keys(openai_models).map((model, k) => (
+                  <SelectItem key={k} value={model} className="gap-4 flex">
+                    <div className="flex gap-1 flex-col">
+                      <span>
+                        {openai_models[model].display_name}
+                        <Badge variant={"outline"} className="font-normal ml-2">
+                          {openai_models[model].gpt}
+                        </Badge>
+                      </span>
+                      <span className="text-xs text-muted-foreground max-w-44">
+                        {openai_models[model].description}
+                      </span>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          }
         />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+        <div className="relative z-0 w-screen min-h-max md:w-2/3 lg:w-3/5 xl:w-3/6 px-3 flex-1 flex flex-col">
+          {newAssistant && (
+            <AssistantSwitchDialog
+              newAssistant={newAssistant}
+              onCallback={(assistant) => {
+                setAssistant(assistant);
+                resetThread();
+              }}
+              onCancel={() => setNewAssistant(null)}
+            />
+          )}
+          <div className="relative flex-1 flex flex-col pt-4 pb-6 gap-1">
+            {isEmpty && (
+              <div className="w-full flex-1 flex flex-col justify-center items-center">
+                <h1 className="font-medium">Ready to chat?</h1>
+                <p className="text-muted-foreground text-sm max-w-60 text-center">
+                  Talk with {openai_models[assistant].display_name} by typing a
+                  message.
+                </p>
+              </div>
+            )}
+            {messages.map((message, k) => (
+              <Bubble
+                key={k}
+                from={message.from}
+                displayName={
+                  message.from === "bot"
+                    ? openai_models[assistant].display_name
+                    : "You"
+                }
+                body={message.body}
+                name={message.name}
+                timestamp={message.timestamp}
+              />
+            ))}
+            {isWriting && (
+              <BubbleWriting assistant={assistant} action="typing" object="" />
+            )}
+          </div>
+          <div className="z-20 flex items-center sticky bottom-0 w-full bg-transparent">
+            <div className="absolute z-0 -top-6 left-0 w-full h-10 bg-gradient-to-b via-white from-transparent to-white"></div>
+            <div className="relative z-10 bg-background w-full flex-1 pb-4">
+              <InputBar onSend={(message) => handleMessage(message)} />
+            </div>
+          </div>
+        </div>
       </div>
     </main>
   );
