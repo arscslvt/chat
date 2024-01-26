@@ -82,7 +82,7 @@ export default function Home() {
       className="flex items-center overflow-y-auto w-full min-h-dvh max-h-dvh flex-col"
       ref={mainRef}
     >
-      <div className="flex flex-col w-screen h-max items-center">
+      <div className="flex flex-col w-screen flex-1 h-max items-center">
         <Toolbar
           title={thread?.metadata?.name ?? "Empty Thread"}
           tooltip={
@@ -127,7 +127,7 @@ export default function Home() {
             </Select>
           }
         />
-        <div className="relative z-0 w-screen min-h-max md:w-2/3 lg:w-3/5 xl:w-3/6 px-3 flex-1 flex flex-col">
+        <div className="relative z-0 w-screen min-h-full h-max md:w-2/3 lg:w-3/5 xl:w-3/6 px-3 flex-1 flex flex-col">
           {newAssistant && (
             <AssistantSwitchDialog
               newAssistant={newAssistant}

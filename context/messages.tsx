@@ -119,9 +119,11 @@ export default function MessagesProvider({
       }
 
       if (
-        _run.status !== "completed" &&
-        _run.status !== "queued" &&
-        _run.status !== "in_progress"
+        _run.status == "requires_action" &&
+        _run.status == "cancelling" &&
+        _run.status == "failed" &&
+        _run.status == "cancelled" &&
+        _run.status == "expired"
       ) {
         setRunning(false);
       }

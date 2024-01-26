@@ -1,8 +1,9 @@
 import { cx } from "class-variance-authority";
 import React from "react";
-import moment from "moment";
 import { Message } from "@/context/messages";
 import { openai_models } from "@/lib/models";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type BubbleProps = Message & {
   displayName: string;
@@ -45,9 +46,11 @@ export default function Bubble({
               : "bg-zinc-50 text-zinc-900 border-zinc-300"
           )}
         >
-          {body[0].type === "text"
-            ? body[0]["text"]["value"]
-            : "Error: Unknown message type."}
+          <Markdown remarkPlugins={[remarkGfm]}>
+            {body[0].type === "text"
+              ? body[0]["text"]["value"]
+              : "Error: Unknown message type."}
+          </Markdown>
         </div>
       </div>
     </div>
