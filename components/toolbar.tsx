@@ -1,7 +1,7 @@
 import React from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 
 interface Props {
@@ -14,7 +14,14 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
   return (
     <div className="w-full flex sticky top-0 left-0 bg-background-dimmed backdrop-blur-xl z-20 px-3">
       <div className="flex-1 flex justify-start items-center">
-        <Button variant={"ghost"}>{"What's this?"}</Button>
+        <span className="hidden sm:block">
+          <Button variant={"ghost"}>{"What's this?"}</Button>
+        </span>
+        <span className="sm:hidden">
+          <Button variant={"ghost"} size={"icon"}>
+            <QuestionMarkCircleIcon className="w-5 h-5" />
+          </Button>
+        </span>
       </div>
       <div className="flex-1 flex justify-center items-center h-16">
         <div className="flex flex-col items-center text-sm">
