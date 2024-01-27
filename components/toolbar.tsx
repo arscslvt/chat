@@ -12,6 +12,7 @@ import {
   DrawerTrigger,
 } from "./ui/drawer";
 import { Badge } from "./ui/badge";
+import { QuestionMarkIcon } from "@radix-ui/react-icons";
 
 interface Props {
   title: string;
@@ -29,8 +30,8 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
               <Button variant={"ghost"} className="hidden sm:block">
                 {"Learn more"}
               </Button>
-              <Button variant={"ghost"} size={"icon"} className="sm:hidden">
-                <QuestionMarkCircleIcon className="w-5 h-5" />
+              <Button variant={"secondary"} size={"icon"} className="sm:hidden">
+                <QuestionMarkIcon width={22} />
               </Button>
             </span>
           </DrawerTrigger>

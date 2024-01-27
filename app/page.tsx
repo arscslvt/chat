@@ -17,6 +17,7 @@ import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import { useAssistant } from "@/context/assistant";
 import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
+import { AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -104,7 +105,10 @@ export default function Home() {
             >
               <SelectTrigger className="border-0 shadow-none text-muted-foreground outline-none h-6 focus:ring-0">
                 <span className="mr-1">
-                  Talking with {openai_models[assistant].display_name}
+                  Talking with{" "}
+                  <span className="text-foreground">
+                    {openai_models[assistant].display_name}
+                  </span>
                 </span>
               </SelectTrigger>
               <SelectContent align="center">
@@ -167,9 +171,15 @@ export default function Home() {
                 timestamp={message.timestamp}
               />
             ))}
-            {isWriting && (
-              <BubbleWriting assistant={assistant} action="typing" object="" />
-            )}
+            <AnimatePresence>
+              {isWriting && (
+                <BubbleWriting
+                  assistant={assistant}
+                  action="typing"
+                  object=""
+                />
+              )}
+            </AnimatePresence>
           </div>
           <div className="z-20 flex items-center sticky bottom-0 w-full bg-transparent">
             <div className="absolute z-0 -top-6 left-0 w-full h-10 bg-gradient-to-b via-white from-transparent to-white"></div>

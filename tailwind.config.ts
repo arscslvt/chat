@@ -68,10 +68,15 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        shrinking: {
+          from: { opacity: "1", width: "2rem" },
+          to: { opacity: "0.7", width: "1rem" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        shrinking: "shrinking 1s ease-in-out infinite alternate",
       },
     },
   },

@@ -102,7 +102,7 @@ export default function InputBar({ onSend }: InputBarProps) {
                 variant={"secondary"}
                 className="h-12 w-12 aspect-square ring-1 ring-zinc-300 bg-zinc-50"
                 onClick={() =>
-                  toast(
+                  toast.info(
                     "This feature is not yet available. Please use the text input for now."
                   )
                 }
