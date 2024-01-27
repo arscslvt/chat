@@ -1,5 +1,6 @@
 "use client";
 
+import { Drawer } from "@/components/ui/drawer";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AsssistantProvider from "@/context/assistant";
 import MessagesProvider from "@/context/messages";
@@ -10,7 +11,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <>
       <AsssistantProvider>
         <MessagesProvider>
-          <TooltipProvider>{children}</TooltipProvider>
+          {/* <Drawer shouldScaleBackground> */}
+            <TooltipProvider>{children}</TooltipProvider>
+          {/* </Drawer> */}
         </MessagesProvider>
       </AsssistantProvider>
     </>
