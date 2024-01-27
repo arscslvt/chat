@@ -22,6 +22,8 @@ export default function InputBar({ onSend }: InputBarProps) {
   const { thread } = useMessages();
   const { assistant } = useAssistant();
 
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
   const handleMessage = (message?: string) => {
     if (!message && value.length < 0) return;
 
@@ -37,6 +39,12 @@ export default function InputBar({ onSend }: InputBarProps) {
       setQueriesShadow("left");
     else setQueriesShadow("both");
   };
+
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [inputRef]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -81,6 +89,7 @@ export default function InputBar({ onSend }: InputBarProps) {
               setValue("");
             }
           }}
+          ref={inputRef}
         />
         <div className="h-full flex items-center gap-2">
           <Tooltip>
