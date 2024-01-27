@@ -46,7 +46,7 @@ export default function Bubble({
               : "bg-zinc-50 text-zinc-900 border-zinc-300"
           )}
         >
-          <Markdown remarkPlugins={[remarkGfm]}>
+          <Markdown remarkPlugins={[remarkGfm]} className={"bubble"}>
             {body[0].type === "text"
               ? body[0]["text"]["value"]
               : "Error: Unknown message type."}

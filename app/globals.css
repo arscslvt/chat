@@ -77,6 +77,58 @@
   }
 }
 
+@layer components {
+  .bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .bubble :first-child {
+    padding-top: 0;
+  }
+  .bubble :last-child {
+    padding-bottom: 0;
+  }
+
+  .bubble ul {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .bubble li {
+    margin-left: 1rem;
+  }
+
+  .bubble h1 {
+    padding: 0.8rem 0;
+    font-weight: 600;
+  }
+
+  .bubble h2 {
+    padding: 0.5rem 0;
+    font-weight: 600;
+  }
+
+  .bubble h3 {
+    padding: 0.3rem 0;
+    font-weight: 500;
+  }
+
+  .bubble h4 {
+    padding: 0.2rem 0;
+    font-weight: 500;
+  }
+
+  .bubble code {
+    border-radius: 2px;
+    padding: 0 0.2rem;
+    background-color: hsl(var(--muted));
+    color: hsl(var(--foreground));
+    border: 1px solid hsl(var(--border));
+  }
+}
+
 @layer utilities {
   /* Hide scrollbar for Chrome, Safari and Opera */
   .no-scrollbar::-webkit-scrollbar {

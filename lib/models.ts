@@ -26,12 +26,25 @@ export const openai_models: {
     id: "asst_bDFBbscqsbQH6s0mZmKBnU4I",
     display_name: "Elara",
     gpt: "gpt-3.5-turbo-16k",
-    description: "Elara is an agant suited for business and economic topics.",
+    description: "Elara is an agent suited for business and economic topics.",
     suggestedQueries: [
       "How to start a business",
       "What is the best way to invest money?",
       "Optimize web dev business",
       "Boost user engagement?",
+    ],
+  },
+  alex: {
+    id: "asst_5axiTFCgM6pSzCm39ddnpGjk",
+    display_name: "Alex",
+    gpt: "gpt-4-turbo-preview",
+    description:
+      "Alex is an agent suited for Next.js coding and design topics.",
+    suggestedQueries: [
+      "How to make a Next.js app",
+      "How to use Tailwind CSS in Next.js",
+      "How to call APIs",
+      "How to enable TypeScript",
     ],
   },
   steve: {
