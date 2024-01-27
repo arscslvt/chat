@@ -1,6 +1,7 @@
 "use client";
 
 import { Drawer } from "@/components/ui/drawer";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AsssistantProvider from "@/context/assistant";
 import MessagesProvider from "@/context/messages";
@@ -12,7 +13,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       <AsssistantProvider>
         <MessagesProvider>
           {/* <Drawer shouldScaleBackground> */}
-            <TooltipProvider>{children}</TooltipProvider>
+          <Toaster position="top-center" />
+          <TooltipProvider>{children}</TooltipProvider>
           {/* </Drawer> */}
         </MessagesProvider>
       </AsssistantProvider>

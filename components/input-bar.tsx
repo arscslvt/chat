@@ -3,10 +3,11 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { MicrophoneIcon, PaperAirplaneIcon } from "@heroicons/react/24/outline";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
-import api from "@/lib/api/config";
 import { useMessages } from "@/context/messages";
 import { useAssistant } from "@/context/assistant";
 import { openai_models } from "@/lib/models";
+
+import { toast } from "sonner";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -19,7 +20,7 @@ export default function InputBar({ onSend }: InputBarProps) {
     "left" | "right" | "both"
   >("right");
 
-  const { thread } = useMessages();
+  const { thread, isWriting } = useMessages();
   const { assistant } = useAssistant();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
@@ -89,6 +90,7 @@ export default function InputBar({ onSend }: InputBarProps) {
               setValue("");
             }
           }}
+          disabled={isWriting}
           ref={inputRef}
         />
         <div className="h-full flex items-center gap-2">
@@ -99,6 +101,11 @@ export default function InputBar({ onSend }: InputBarProps) {
                 size={"icon"}
                 variant={"secondary"}
                 className="h-12 w-12 aspect-square ring-1 ring-zinc-300 bg-zinc-50"
+                onClick={() =>
+                  toast(
+                    "This feature is not yet available. Please use the text input for now."
+                  )
+                }
               >
                 <MicrophoneIcon className="h-5 w-5" />
               </Button>

@@ -154,6 +154,7 @@ export default function MessagesProvider({
 
   const addMessage = async (message: Message) => {
     setMessages([...messages, message]);
+    setIsWriting(true);
 
     let _thread = thread;
 
