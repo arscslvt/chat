@@ -127,7 +127,7 @@ export default function Home() {
             </Select>
           }
         />
-        <div className="relative z-0 w-screen min-h-full h-max md:w-2/3 lg:w-3/5 xl:w-3/6 px-3 flex-1 flex flex-col">
+        <div className="relative z-0 w-screen min-h-full h-max md:w-2/3 lg:w-3/5 xl:w-3/6 flex-1 flex flex-col">
           {newAssistant && (
             <AssistantSwitchDialog
               newAssistant={newAssistant}
@@ -143,7 +143,7 @@ export default function Home() {
               }}
             />
           )}
-          <div className="relative flex-1 flex flex-col pt-4 pb-6 gap-1">
+          <div className="relative flex-1 flex flex-col pt-4 pb-6 px-3 gap-1">
             {isEmpty && (
               <div className="w-full flex-1 flex flex-col justify-center items-center">
                 <h1 className="font-medium">Ready to chat?</h1>
