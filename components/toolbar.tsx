@@ -24,19 +24,19 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
   return (
     <div className="w-full flex sticky top-0 left-0 bg-background-dimmed backdrop-blur-xl z-20 px-3">
       <div className="flex-1 flex justify-start items-center">
-        <Drawer shouldScaleBackground direction="bottom">
-          <DrawerTrigger asChild>
-            <span>
-              <Button variant={"ghost"} className="hidden sm:block">
-                {"Learn more"}
-              </Button>
-              <Button variant={"secondary"} size={"icon"} className="sm:hidden">
-                <QuestionMarkIcon width={22} />
-              </Button>
-            </span>
-          </DrawerTrigger>
-          <LearnMoreDrawer />
-        </Drawer>
+        {/* <Drawer shouldScaleBackground direction="bottom"> */}
+        <DrawerTrigger asChild>
+          <span>
+            <Button variant={"ghost"} className="hidden sm:block">
+              {"Learn more"}
+            </Button>
+            <Button variant={"secondary"} size={"icon"} className="sm:hidden">
+              <QuestionMarkIcon width={22} />
+            </Button>
+          </span>
+        </DrawerTrigger>
+        <LearnMoreDrawer />
+        {/* </Drawer> */}
       </div>
       <div className="flex-1 flex justify-center items-center h-16">
         <div className="flex flex-col items-center text-sm">
@@ -79,14 +79,18 @@ const LearnMoreDrawer = () => {
       </DrawerHeader>
 
       <div className="flex flex-wrap justify-center gap-2">
-        <Badge variant={"outline"} className="font-normal">
+        <Badge variant={"outline"} className="font-normal border-green-500">
           {"It's fully free."}
         </Badge>
-        <Badge variant={"outline"} className="font-normal">
-          GPT-3/4 Assistants (beta) by OpenAI.
+        <Badge variant={"outline"} className="font-normal border-orange-500">
+          GPT Assistants (beta) by OpenAI.
         </Badge>
-        <Badge variant={"outline"} className="font-normal">
-          We {"don't"} store any of your data.
+        <Badge variant={"outline"} className="font-normal border-blue-500">
+          <span>
+            We{" "}
+            <span className="font-medium text-blue-500">{"don't"} store</span>{" "}
+            your data and chats.
+          </span>
         </Badge>
       </div>
     </DrawerContent>

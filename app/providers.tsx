@@ -12,10 +12,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <>
       <AsssistantProvider>
         <MessagesProvider>
-          {/* <Drawer shouldScaleBackground> */}
           <Toaster position="top-center" />
-          <TooltipProvider>{children}</TooltipProvider>
-          {/* </Drawer> */}
+          <TooltipProvider>
+            <Drawer shouldScaleBackground={true}>{children}</Drawer>
+          </TooltipProvider>
         </MessagesProvider>
       </AsssistantProvider>
     </>
