@@ -82,7 +82,7 @@ export const BubbleWriting = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
     >
-      <div className="flex flex-col gap-1 items-center  py-4">
+      <div className="flex flex-col gap-1 items-center py-4 mt-2">
         <div className="inline-block ml-1 w-8 h-3 aspect-square rounded-full bg-primary animate-shrinking transition-transform" />
         <div className="flex items-center justify-center text-muted-foreground">
           <span className="text-sm">

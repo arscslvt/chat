@@ -17,7 +17,7 @@ import dayjs from "dayjs";
 import { useParams } from "next/navigation";
 import { useAssistant } from "@/context/assistant";
 import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -147,14 +147,28 @@ export default function Home() {
               }}
             />
           )}
-          <div className="relative flex-1 flex flex-col pt-4 pb-6 px-3 gap-1">
+          <div className="relative flex-1 flex flex-col pt-4 pb-6 px-3 gap-3">
             {isEmpty && (
               <div className="w-full flex-1 flex flex-col justify-center items-center">
-                <h1 className="font-medium">Ready to chat?</h1>
-                <p className="text-muted-foreground text-sm max-w-60 text-center">
+                <motion.h1
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: "circInOut" }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="font-medium"
+                >
+                  Ready to chat?
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: "backOut", delay: 0.4 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="text-muted-foreground text-sm max-w-60 text-center"
+                >
                   Talk with {openai_models[assistant].display_name} by typing a
                   message.
-                </p>
+                </motion.p>
               </div>
             )}
             {messages.map((message, k) => (

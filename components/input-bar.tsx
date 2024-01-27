@@ -7,6 +7,8 @@ import { useMessages } from "@/context/messages";
 import { useAssistant } from "@/context/assistant";
 import { openai_models } from "@/lib/models";
 
+import { motion } from "framer-motion";
+
 import { toast } from "sonner";
 
 interface InputBarProps {
@@ -58,24 +60,31 @@ export default function InputBar({ onSend }: InputBarProps) {
             <div className="absolute left-0 w-5 h-full bg-gradient-to-r from-background to-transparent" />
           )}
 
-          <div
+          <motion.div
             className="flex gap-2 overflow-x-auto px-3 no-scrollbar"
             onScroll={handleSuggestedScroll}
           >
             {openai_models[assistant].suggestedQueries?.map((query, i) => {
               return (
-                <Button
+                <motion.span
                   key={i}
-                  variant={"outline"}
-                  size={"sm"}
-                  className="bg-zinc-50 border-zinc-300"
-                  onClick={() => setValue(query)}
+                  animate={{ opacity: 1, x: 0 }}
+                  initial={{ opacity: 0, x: 10 }}
+                  transition={{ duration: 0.2, delay: i * 0.1 + 1 }}
                 >
-                  {query}
-                </Button>
+                  <Button
+                    key={i}
+                    variant={"outline"}
+                    size={"sm"}
+                    className="bg-zinc-50 border-zinc-300"
+                    onClick={() => setValue(query)}
+                  >
+                    {query}
+                  </Button>
+                </motion.span>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       )}
       <div className="flex items-center gap-2 px-3 min-h-[3rem]">
