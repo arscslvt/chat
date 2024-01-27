@@ -4,6 +4,7 @@ export const openai_models: {
     display_name: string;
     gpt: string;
     description: string;
+    suggestedQueries?: string[];
   };
 } = {
   //   "gpt-3.5-turbo-16k": "GPT-3.5 Turbo",
@@ -14,12 +15,24 @@ export const openai_models: {
     display_name: "Lucas",
     gpt: "gpt-3.5-turbo-16k",
     description: "Lucas is a chatbot suited for colloquial conversations.",
+    suggestedQueries: [
+      "Tell me a story",
+      "What is the best programming language?",
+      "Give me a good joke.",
+      "How can I make a chocolate cake?",
+    ],
   },
   elara: {
     id: "asst_bDFBbscqsbQH6s0mZmKBnU4I",
     display_name: "Elara",
     gpt: "gpt-3.5-turbo-16k",
     description: "Elara is an agant suited for business and economic topics.",
+    suggestedQueries: [
+      "How to start a business",
+      "What is the best way to invest money?",
+      "Optimize web dev business",
+      "Boost user engagement?",
+    ],
   },
   steve: {
     id: "asst_NyMIGJVIRpZDdHTCq1QBTCRH",
@@ -27,5 +40,11 @@ export const openai_models: {
     gpt: "gpt-4-turbo-preview",
     description:
       "Steve is a super Minecraft player. He knows everything about the game.",
+    suggestedQueries: [
+      "How to build a house",
+      "How to get diamonds",
+      "How to get to the Nether",
+      "How to get to the End",
+    ],
   },
 };

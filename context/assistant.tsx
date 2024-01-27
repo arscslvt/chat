@@ -1,12 +1,12 @@
 import { openai_models } from "@/lib/models";
-import React from "react";
+import React, { useCallback } from "react";
 
 interface AssistantContextProps {
-  assistant: typeof openai_models;
+  assistant: keyof typeof openai_models;
   setAssistant: (name: keyof typeof openai_models) => void;
 }
 
-const AssistantContext = React.createContext({} as any);
+const AssistantContext = React.createContext<AssistantContextProps>({} as any);
 
 export default function AsssistantProvider({
   children,
@@ -16,9 +16,9 @@ export default function AsssistantProvider({
   const [assistant, setAssitantState] =
     React.useState<keyof typeof openai_models>("lucas");
 
-  const setAssistant = (name: keyof typeof openai_models) => {
+  const setAssistant = useCallback((name: keyof typeof openai_models) => {
     setAssitantState(name);
-  };
+  }, []);
 
   return (
     <AssistantContext.Provider value={{ assistant, setAssistant }}>

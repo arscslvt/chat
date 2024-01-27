@@ -99,7 +99,7 @@ export default function Home() {
           subtitle={
             <Select
               defaultValue={openai_models.lucas.id}
-              value={assistant}
+              value={assistant as string}
               onValueChange={(assistant) => handleAssistantSwitch(assistant)}
             >
               <SelectTrigger className="border-0 shadow-none text-muted-foreground outline-none h-6 focus:ring-0">
@@ -135,7 +135,12 @@ export default function Home() {
                 setAssistant(assistant);
                 resetThread();
               }}
-              onCancel={() => setNewAssistant(null)}
+              onCancel={() => {
+                setNewAssistant(null);
+                setAssistant(
+                  thread?.metadata?.assistantSlug as keyof typeof openai_models
+                );
+              }}
             />
           )}
           <div className="relative flex-1 flex flex-col pt-4 pb-6 gap-1">

@@ -51,7 +51,7 @@ export default function MessagesProvider({
   const router = useRouter();
   const params = useParams<{ id: string }>();
 
-  const { assistant } = useAssistant();
+  const { assistant, setAssistant } = useAssistant();
 
   const [thread, setThread] = React.useState<MessagesContext["thread"]>(null);
   const [messages, setMessages] = React.useState<MessagesContext["messages"]>(
@@ -65,26 +65,31 @@ export default function MessagesProvider({
     setIsWriting(run ? true : false);
   }, [run]);
 
-  const getThread = useCallback(async (id: string): Promise<Message[]> => {
-    const thread = await apiGetThread(id).catch((e) => {
-      throw new Error("Error getting thread.");
-    });
+  const getThread = useCallback(
+    async (id: string): Promise<Message[]> => {
+      const thread: Thread = await apiGetThread(id).catch((e) => {
+        throw new Error("Error getting thread.");
+      });
 
-    if (thread) {
-      setThread(thread);
-    }
+      if (thread) {
+        setThread(thread);
+        if (Object.keys(openai_models).includes(thread.metadata.assistantSlug))
+          setAssistant(thread.metadata.assistantSlug);
+      }
 
-    const _messages = await apiGetMessages(id).catch((e) => {
-      throw new Error("Error getting messages: ", e);
-    });
+      const _messages = await apiGetMessages(id).catch((e) => {
+        throw new Error("Error getting messages: ", e);
+      });
 
-    if (_messages) {
-      setMessages(_messages);
-      return _messages;
-    }
+      if (_messages) {
+        setMessages(_messages);
+        return _messages;
+      }
 
-    return [];
-  }, []);
+      return [];
+    },
+    [setAssistant]
+  );
 
   useEffect(() => {
     if (params.id) {
@@ -101,9 +106,10 @@ export default function MessagesProvider({
   }, [getThread, params.id, router]);
 
   useEffect(() => {
-    let runCount = 0;
-
-    const retrieveRun = async (threadId: Thread["id"], runId: string) => {
+    const retrieveRun = async (
+      threadId: Thread["id"],
+      runId: string
+    ): Promise<boolean> => {
       const _run = await apiGetRun(threadId, runId).catch((e) => {
         console.log("Error getting run: ", e);
       });
@@ -116,6 +122,7 @@ export default function MessagesProvider({
         });
 
         setRunning(false);
+        return true;
       }
 
       if (
@@ -125,13 +132,23 @@ export default function MessagesProvider({
         _run.status == "cancelled" &&
         _run.status == "expired"
       ) {
+        console.log("[RUN] Failed: ", _run);
         setRunning(false);
+        return false;
       }
+
+      return false;
     };
 
+    const timer = new Promise((resolve) => setTimeout(resolve, 1500));
+
     if (run && thread) {
-      const timer = new Promise((resolve) => setTimeout(resolve, 1000));
-      timer.then(() => retrieveRun(thread.id, run));
+      const check = async () => {
+        const res = await retrieveRun(thread.id, run);
+        if (!res) await timer.then(check);
+      };
+
+      check();
     }
   }, [run, thread, getThread]);
 
@@ -173,7 +190,7 @@ export default function MessagesProvider({
   };
 
   const createThread = async (): Promise<Thread> => {
-    const res = await apiCreateThread().catch((e) => {
+    const res = await apiCreateThread(assistant).catch((e) => {
       throw new Error("Error creating thread.");
     });
 
