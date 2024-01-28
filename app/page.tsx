@@ -196,7 +196,7 @@ export default function Home() {
             </AnimatePresence>
           </div>
           <div className="z-20 flex items-center sticky bottom-0 w-full bg-transparent">
-            <div className="absolute z-0 -top-6 left-0 w-full h-10 bg-gradient-to-b via-white from-transparent to-white"></div>
+            <div className="absolute z-0 -top-6 left-0 w-full h-10 bg-gradient-to-b via-background from-transparent to-background"></div>
             <div className="relative z-10 bg-background w-full flex-1 pb-4">
               <InputBar onSend={(message) => handleMessage(message)} />
             </div>

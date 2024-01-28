@@ -27,10 +27,9 @@ export default function InputBar({ onSend }: InputBarProps) {
 
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const handleMessage = (message?: string) => {
-    if (!message && value.length < 0) return;
-
-    onSend(message || value);
+  const handleMessage = () => {
+    if (value.length === 0) return;
+    onSend(value);
     setValue("");
   };
 
@@ -76,7 +75,7 @@ export default function InputBar({ onSend }: InputBarProps) {
                     key={i}
                     variant={"outline"}
                     size={"sm"}
-                    className="bg-zinc-50 border-zinc-300"
+                    className="bg-zinc-50 dark:bg-background border-zinc-300 dark:border-border"
                     onClick={() => setValue(query)}
                   >
                     {query}
@@ -90,7 +89,7 @@ export default function InputBar({ onSend }: InputBarProps) {
       <div className="flex items-center gap-2 px-3 min-h-[3rem]">
         <Input
           placeholder="Type a message"
-          className="h-[3rem] flex-1 text-base sm:text-sm bg-zinc-50 border-zinc-300 shadow-none hover:pl-4 focus:pl-3 focus:shadow-lg focus:!border-zinc-400 focus:!ring-transparent transition-all"
+          className="h-[3rem] flex-1 text-base sm:text-sm bg-zinc-50 dark:bg-background border-zinc-300 dark:border-input shadow-none hover:pl-4 focus:pl-3 focus:shadow-lg focus:!border-zinc-400 focus:!ring-transparent transition-all"
           value={value}
           onInput={(e) => setValue(e.currentTarget.value)}
           onKeyDown={(e) => {
@@ -109,7 +108,7 @@ export default function InputBar({ onSend }: InputBarProps) {
               <Button
                 size={"icon"}
                 variant={"secondary"}
-                className="h-12 w-12 aspect-square ring-1 ring-zinc-300 bg-zinc-50"
+                className="h-12 w-12 aspect-square ring-1 ring-zinc-300 bg-zinc-50 dark:bg-background dark:ring-border"
                 onClick={() =>
                   toast.info(
                     "This feature is not yet available. Please use the text input for now."

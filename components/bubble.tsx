@@ -40,7 +40,7 @@ export default function Bubble({
           )}
         >
           {from === "bot" && (
-            <span className="w-3 h-3 rounded-full bg-primary" />
+            <span className="-ml-[7.5px] w-3 h-3 rounded-full bg-primary" />
           )}
           {from === "bot" && <span>{displayName || name}</span>}{" "}
           {/* · <span>{moment(timestamp).fromNow()}</span> */}
@@ -49,8 +49,8 @@ export default function Bubble({
           className={cx(
             " sm:text-sm",
             from === "sender"
-              ? "border rounded-md rounded-br-[6px] px-4 py-2 bg-zinc-900 text-zinc-100 border-zinc-950 shadow-inner shadow-zinc-800"
-              : "border-l border-muted ml-2 px-2 mt-2 text-zinc-900 "
+              ? "border rounded-md rounded-br-[6px] px-4 py-2 bg-zinc-900 text-zinc-100 dark:text-foreground border-zinc-950 shadow-inner shadow-zinc-800"
+              : "border-l border-muted ml-2 px-2 mt-2 text-zinc-900 dark:text-foreground"
           )}
         >
           <Markdown remarkPlugins={[remarkGfm]} className={"bubble"}>

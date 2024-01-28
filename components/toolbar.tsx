@@ -1,10 +1,11 @@
+"use client";
+
 import React from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
-import { PlusIcon, QuestionMarkCircleIcon } from "@heroicons/react/24/outline";
+
 import Link from "next/link";
 import {
-  Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
@@ -12,7 +13,20 @@ import {
   DrawerTrigger,
 } from "./ui/drawer";
 import { Badge } from "./ui/badge";
-import { QuestionMarkIcon } from "@radix-ui/react-icons";
+import {
+  DesktopIcon,
+  MoonIcon,
+  PlusIcon,
+  QuestionMarkIcon,
+  SunIcon,
+} from "@radix-ui/react-icons";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { useTheme } from "next-themes";
 
 interface Props {
   title: string;
@@ -21,22 +35,22 @@ interface Props {
 }
 
 export default function Toolbar({ title, tooltip, subtitle }: Props) {
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="w-full flex sticky top-0 left-0 bg-background-dimmed backdrop-blur-xl z-20 px-3">
       <div className="flex-1 flex justify-start items-center">
-        {/* <Drawer shouldScaleBackground direction="bottom"> */}
         <DrawerTrigger asChild>
-          <span>
+          <>
             <Button variant={"ghost"} className="hidden sm:block">
               {"Learn more"}
             </Button>
             <Button variant={"secondary"} size={"icon"} className="sm:hidden">
               <QuestionMarkIcon width={22} />
             </Button>
-          </span>
+          </>
         </DrawerTrigger>
         <LearnMoreDrawer />
-        {/* </Drawer> */}
       </div>
       <div className="flex-1 flex justify-center items-center h-16">
         <div className="flex flex-col items-center text-sm">
@@ -46,10 +60,43 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
               <h1 className="font-medium">{title}</h1>
             </TooltipTrigger>
           </Tooltip>
-          <span className="text-muted">{subtitle}</span>
+          <div className="text-muted">{subtitle}</div>
         </div>
       </div>
-      <div className="flex-1 flex justify-end items-center">
+      <div className="flex-1 flex gap-4 justify-end items-center">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant={"ghost"} size={"icon"}>
+              {theme === "light" ? (
+                <SunIcon className="w-5 h-5" />
+              ) : theme === "dark" ? (
+                <MoonIcon className="w-5 h-5" />
+              ) : (
+                <DesktopIcon className="w-5 h-5" />
+              )}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuCheckboxItem
+              checked={theme === "light"}
+              onClick={() => setTheme("light")}
+            >
+              <span>Light</span>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={theme === "dark"}
+              onClick={() => setTheme("dark")}
+            >
+              <span>Dark</span>
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={theme === "system"}
+              onClick={() => setTheme("system")}
+            >
+              <span>System</span>
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Tooltip>
           <TooltipContent align="center" side="left">
             Start a new thread
