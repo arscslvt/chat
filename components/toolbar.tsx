@@ -41,14 +41,14 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
     <div className="w-full flex sticky top-0 left-0 bg-background-dimmed backdrop-blur-xl z-20 px-3">
       <div className="flex-1 flex justify-start items-center">
         <DrawerTrigger asChild>
-          <>
+          <span>
             <Button variant={"ghost"} className="hidden sm:block">
               {"Learn more"}
             </Button>
             <Button variant={"secondary"} size={"icon"} className="sm:hidden">
               <QuestionMarkIcon width={22} />
             </Button>
-          </>
+          </span>
         </DrawerTrigger>
         <LearnMoreDrawer />
       </div>
