@@ -10,6 +10,7 @@ import apiSendMessage from "@/lib/api/messages/send";
 import { useAssistant } from "./assistant";
 import { openai_models } from "@/lib/models";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
+import { useReferences } from "./references";
 
 interface Thread {
   created_at: string;
@@ -105,6 +106,8 @@ export default function MessagesProvider({
     }
   }, [getThread, params.id, router]);
 
+  const { references } = useReferences();
+
   useEffect(() => {
     const retrieveRun = async (
       threadId: Thread["id"],
@@ -121,6 +124,10 @@ export default function MessagesProvider({
           console.log("Error updating thread messages: ", e);
         });
 
+        const inputRef = references["messageInput"];
+        if (inputRef.current) {
+          inputRef.current.focus();
+        }
         setRunning(false);
         return true;
       }

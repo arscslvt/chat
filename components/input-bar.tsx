@@ -10,6 +10,7 @@ import { openai_models } from "@/lib/models";
 import { motion } from "framer-motion";
 
 import { toast } from "sonner";
+import { useReferences } from "@/context/references";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -25,7 +26,13 @@ export default function InputBar({ onSend }: InputBarProps) {
   const { thread, isWriting } = useMessages();
   const { assistant } = useAssistant();
 
+  const { references, addReference } = useReferences();
+
   const inputRef = React.useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    addReference("messageInput", inputRef);
+  }, [inputRef, addReference]);
 
   const handleMessage = () => {
     if (value.length === 0) return;

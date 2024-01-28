@@ -13,7 +13,7 @@ export const openai_models: {
   lucas: {
     id: "asst_Pen2Qdppv1VdieeUtvPQg8XF",
     display_name: "Lucas",
-    gpt: "gpt-3.5-turbo-16k",
+    gpt: "GPT 3.5",
     description: "Lucas is a chatbot suited for colloquial conversations.",
     suggestedQueries: [
       "Tell me a story",
@@ -22,10 +22,24 @@ export const openai_models: {
       "How can I make a chocolate cake?",
     ],
   },
+  rose: {
+    id: "asst_DxgR8kIjsWatEp6ot7g4OioJ",
+    display_name: "Rose",
+    gpt: "GPT 4",
+    description:
+      "Rose is a chatbot suited for colloquial conversations. More advanced than Lucas.",
+    suggestedQueries: [
+      "Suggest me a recipe",
+      "Generate a poem",
+      "Solve a math problem",
+      "What is AI?",
+      "What can you do?",
+    ],
+  },
   elara: {
     id: "asst_bDFBbscqsbQH6s0mZmKBnU4I",
     display_name: "Elara",
-    gpt: "gpt-3.5-turbo-16k",
+    gpt: "GPT 3.5",
     description: "Elara is an agent suited for business and economic topics.",
     suggestedQueries: [
       "How to start a business",
@@ -37,7 +51,7 @@ export const openai_models: {
   alex: {
     id: "asst_5axiTFCgM6pSzCm39ddnpGjk",
     display_name: "Alex",
-    gpt: "gpt-4-turbo-preview",
+    gpt: "GPT 4",
     description:
       "Alex is an agent suited for Next.js coding and design topics.",
     suggestedQueries: [
@@ -50,7 +64,7 @@ export const openai_models: {
   steve: {
     id: "asst_NyMIGJVIRpZDdHTCq1QBTCRH",
     display_name: "Steve",
-    gpt: "gpt-4-turbo-preview",
+    gpt: "GPT 4",
     description:
       "Steve is a super Minecraft player. He knows everything about the game.",
     suggestedQueries: [
