@@ -27,6 +27,11 @@ export async function generateMetadata(
 
   return {
     title: chat?.metadata.name || "A thread on Chat by Salvatore Aresco.",
+    openGraph: {
+      title: chat?.metadata.name || "A thread on Chat by Salvatore Aresco.",
+      description:
+        "View this thread on Chat by Salvatore Aresco. A free web app for chatting with GPT-4 powered bots.",
+    },
   };
 }
 
