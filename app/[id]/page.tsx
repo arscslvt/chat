@@ -16,7 +16,9 @@ export async function generateMetadata(
   const id = params.id;
 
   // fetch data
-  const chat = await getThread(id).catch(() => null);
+  const chat = await fetch(`https://chat.salvatore.ai/api/thread/${id}`)
+    .then((res) => res.json())
+    .catch(() => null);
 
   // optionally access and extend (rather than replace) parent metadata
   // const previousImages = (await parent).openGraph?.images || []
