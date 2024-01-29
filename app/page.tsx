@@ -199,7 +199,7 @@ export default function Home() {
                   </motion.p>
                 </motion.div>
               ) : (
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col">
                   {thread?.metadata?.name !== "New Thread" && (
                     <motion.div
                       className="flex flex-col gap-1.5 items-center justify-start overflow-hidden h-0 line-clamp-2"
@@ -213,20 +213,22 @@ export default function Home() {
                       </p>
                     </motion.div>
                   )}
-                  {messages.map((message, k) => (
-                    <Bubble
-                      key={k}
-                      from={message.from}
-                      displayName={
-                        message.from === "bot"
-                          ? openai_models[assistant].display_name
-                          : "You"
-                      }
-                      body={message.body}
-                      name={message.name}
-                      timestamp={message.timestamp}
-                    />
-                  ))}
+                  <div className="flex flex-col gap-3">
+                    {messages.map((message, k) => (
+                      <Bubble
+                        key={k}
+                        from={message.from}
+                        displayName={
+                          message.from === "bot"
+                            ? openai_models[assistant].display_name
+                            : "You"
+                        }
+                        body={message.body}
+                        name={message.name}
+                        timestamp={message.timestamp}
+                      />
+                    ))}
+                  </div>
                 </div>
               )}
             </AnimatePresence>
