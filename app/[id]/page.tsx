@@ -23,18 +23,18 @@ export async function generateMetadata(
   // optionally access and extend (rather than replace) parent metadata
   // const previousImages = (await parent).openGraph?.images || []
 
-  console.log(chat);
+  console.log("This chat metadata: ", chat);
 
   return {
-    title: chat?.metadata.name || "A thread on Chat by Salvatore Aresco.",
+    title: chat?.metadata.name,
     openGraph: {
-      title: chat?.metadata.name || "A thread on Chat by Salvatore Aresco.",
+      title: chat?.metadata.name,
       description:
         "View this thread on Chat by Salvatore Aresco. A free web app for chatting with GPT-4 powered bots.",
     },
   };
 }
 
-export default async function Chat({ params, searchParams }: Props) {
+export default function Chat({ params, searchParams }: Props) {
   return <Home />;
 }
