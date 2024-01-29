@@ -35,8 +35,10 @@ export async function generateMetadata(
 
 export default function ThreadLayout({
   children,
+  params,
+  searchParams,
 }: {
   children: React.ReactNode;
-}) {
+} & Props) {
   return <>{children}</>;
 }
