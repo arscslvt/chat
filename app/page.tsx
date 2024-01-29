@@ -18,6 +18,8 @@ import { useParams } from "next/navigation";
 import { useAssistant } from "@/context/assistant";
 import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
 import { AnimatePresence, motion } from "framer-motion";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -85,14 +87,17 @@ export default function Home() {
     >
       <div className="flex flex-col w-screen flex-1 h-max items-center">
         <Toolbar
-          title={thread?.metadata?.name ?? "Empty Thread"}
+          title={thread?.id ? "Chat" : "Start a new chat"}
           tooltip={
             thread ? (
-              <p className="text-center">
-                ID: {thread?.id}
-                <br />
-                Created: {dayjs(thread?.created_at).format("MMMM D, YYYY")}
-              </p>
+              <div className="text-center flex flex-col gap-1.5">
+                {thread?.metadata?.name && (
+                  <p className="font-medium">{thread?.metadata?.name}</p>
+                )}
+                <div className="!text-muted-foreground">
+                  <p>{dayjs(thread?.created_at).format("MMMM D, YYYY")}</p>
+                </div>
+              </div>
             ) : (
               "Type a message to start a new thread."
             )
@@ -117,7 +122,10 @@ export default function Home() {
                     <div className="flex gap-1 flex-col">
                       <span>
                         {openai_models[model].display_name}
-                        <Badge variant={"outline"} className="font-normal ml-2">
+                        <Badge
+                          variant={"outline"}
+                          className="font-normal ml-2 uppercase"
+                        >
                           {openai_models[model].gpt}
                         </Badge>
                       </span>
@@ -148,43 +156,80 @@ export default function Home() {
             />
           )}
           <div className="relative flex-1 flex flex-col pt-4 pb-6 px-3 gap-3">
-            {isEmpty && (
-              <div className="w-full flex-1 flex flex-col justify-center items-center">
-                <motion.h1
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: "circInOut" }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="font-medium"
-                >
-                  Ready to chat?
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: "backOut", delay: 0.4 }}
-                  exit={{ opacity: 0, y: -6 }}
-                  className="text-muted-foreground text-sm max-w-60 text-center"
-                >
-                  Talk with {openai_models[assistant].display_name} by typing a
-                  message.
-                </motion.p>
-              </div>
+            {openai_models[assistant].gpt === "gpt-4" && (
+              <Alert>
+                <InfoCircledIcon className="w-4 h-4" />
+                <AlertTitle>{"You're using a GPT-4 based Persona."}</AlertTitle>
+                <AlertDescription>
+                  This model is best suited for long-form text generation.{" "}
+                  <br />
+                  Use it only if you need more precise and longer responses.
+                </AlertDescription>
+              </Alert>
             )}
-            {messages.map((message, k) => (
-              <Bubble
-                key={k}
-                from={message.from}
-                displayName={
-                  message.from === "bot"
-                    ? openai_models[assistant].display_name
-                    : "You"
-                }
-                body={message.body}
-                name={message.name}
-                timestamp={message.timestamp}
-              />
-            ))}
+            <AnimatePresence>
+              {isEmpty ? (
+                <motion.div
+                  className="w-full flex-1 flex flex-col justify-center items-center"
+                  animate={{ scale: 1, opacity: 1, flex: 1 }}
+                  exit={{
+                    scale: 0.6,
+                    opacity: 0,
+                    flex: 0,
+                  }}
+                >
+                  <motion.h1
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: "circInOut" }}
+                    exit={{ opacity: 0, y: -6 }}
+                    className="font-medium"
+                  >
+                    Ready to chat?
+                  </motion.h1>
+                  <motion.p
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: "backOut", delay: 0.4 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    className="text-muted-foreground text-sm max-w-60 text-center"
+                  >
+                    Talk with {openai_models[assistant].display_name} by typing
+                    a message.
+                  </motion.p>
+                </motion.div>
+              ) : (
+                <div className="flex flex-col">
+                  {thread?.metadata?.name !== "New Thread" && (
+                    <motion.div
+                      className="flex flex-col gap-1.5 items-center justify-start overflow-hidden h-0 line-clamp-2"
+                      initial={{ opacity: 0, y: -10, height: 0 }}
+                      animate={{ opacity: 1, y: 0, height: 60 }}
+                      transition={{ duration: 0.4, ease: "circInOut" }}
+                      exit={{ opacity: 0, y: -6, height: 0 }}
+                    >
+                      <p className="pt-2 text-sm text-muted-foreground">
+                        {thread?.metadata?.name}
+                      </p>
+                    </motion.div>
+                  )}
+                  {messages.map((message, k) => (
+                    <Bubble
+                      key={k}
+                      from={message.from}
+                      displayName={
+                        message.from === "bot"
+                          ? openai_models[assistant].display_name
+                          : "You"
+                      }
+                      body={message.body}
+                      name={message.name}
+                      timestamp={message.timestamp}
+                    />
+                  ))}
+                </div>
+              )}
+            </AnimatePresence>
             <AnimatePresence>
               {isWriting && (
                 <BubbleWriting

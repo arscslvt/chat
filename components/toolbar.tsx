@@ -53,11 +53,20 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
         <LearnMoreDrawer />
       </div>
       <div className="flex-1 flex justify-center items-center h-16">
-        <div className="flex flex-col items-center text-sm">
+        <div className="flex flex-col items-center text-sm max-w-full">
           <Tooltip>
             <TooltipContent>{tooltip}</TooltipContent>
-            <TooltipTrigger>
-              <h1 className="font-medium">{title}</h1>
+            <TooltipTrigger className="w-full max-w-full">
+              <h1
+                className="font-medium text-ellipsis max-w-full overflow-hidden lg:whitespace-nowrap"
+                style={{
+                  textOverflow: "ellipsis",
+                  overflow: "hidden",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {title}
+              </h1>
             </TooltipTrigger>
           </Tooltip>
           <div className="text-muted">{subtitle}</div>

@@ -11,13 +11,17 @@ import { useAssistant } from "./assistant";
 import { openai_models } from "@/lib/models";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { useReferences } from "./references";
+import generateTitle from "@/lib/api/thread/edit/generateTitle";
 
 interface Thread {
   created_at: string;
   id: string;
   object: string;
   createdAt: string;
-  metadata: any;
+  metadata: {
+    [key: string]: any;
+    name: string;
+  };
 }
 
 interface Message {
@@ -166,7 +170,9 @@ export default function MessagesProvider({
     let _thread = thread;
 
     if (!_thread?.id) {
-      const r = await createThread().catch((e) => {
+      const messageText: string = message.body[0]?.text?.value;
+
+      const r = await createThread(messageText || undefined).catch((e) => {
         throw new Error("Error creating thread: ", e);
       });
 
@@ -197,16 +203,40 @@ export default function MessagesProvider({
     console.log("Received message: ", receivedMessage);
   };
 
-  const createThread = async (): Promise<Thread> => {
-    const res = await apiCreateThread(assistant).catch((e) => {
-      throw new Error("Error creating thread.");
-    });
+  const handleTitleGeneration = async (threadId: string, message: string) => {
+    // set a promise timeout of 2 seconds and await it before generating the title
+    const timer = new Promise((resolve) => setTimeout(resolve, 2000));
 
-    if (res) {
-      setThread(res);
+    const messageText: string = message;
+
+    console.log("Generating title from Message text: ", messageText);
+
+    const threadTitle = await generateTitle(threadId, messageText).catch(
+      (e) => {
+        throw new Error("Error generating title: ", e);
+      }
+    );
+
+    console.log("Generated title: ", threadTitle);
+
+    if (threadTitle && thread?.metadata) {
+      const _thread = thread as Thread;
+      _thread.metadata.name = threadTitle;
+
+      setThread(_thread);
+    }
+  };
+
+  const createThread = async (fromMessage?: string): Promise<Thread> => {
+    let thread = await apiCreateThread(assistant).catch((e) => {
+      throw new Error("Error creating thread: ", e);
+    });
+    if (thread) {
+      setThread(thread);
     }
 
-    return res;
+    if (fromMessage) handleTitleGeneration(thread.id, fromMessage);
+    return thread;
   };
 
   const resetThread = useCallback(() => {
