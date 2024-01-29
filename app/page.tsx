@@ -20,6 +20,7 @@ import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
 import { AnimatePresence, motion } from "framer-motion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import WhatsNew from "@/components/whats-new";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -139,6 +140,11 @@ export default function Home() {
             </Select>
           }
         />
+
+        <div className="px-3">
+          <WhatsNew />
+        </div>
+
         <div className="relative z-0 w-screen min-h-full h-max md:w-2/3 lg:w-3/5 xl:w-3/6 flex-1 flex flex-col">
           {newAssistant && (
             <AssistantSwitchDialog
