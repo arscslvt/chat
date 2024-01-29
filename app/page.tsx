@@ -199,7 +199,7 @@ export default function Home() {
                   </motion.p>
                 </motion.div>
               ) : (
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-3">
                   {thread?.metadata?.name !== "New Thread" && (
                     <motion.div
                       className="flex flex-col gap-1.5 items-center justify-start overflow-hidden h-0 line-clamp-2"
