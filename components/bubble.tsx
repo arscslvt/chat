@@ -66,7 +66,7 @@ export default function Bubble({
         </div>
         <div
           className={cx(
-            " sm:text-sm",
+            "sm:text-[15px]",
             from === "sender"
               ? "border rounded-md rounded-br-[6px] px-4 py-2 bg-zinc-900 text-zinc-100 dark:text-foreground border-zinc-950 shadow-inner shadow-zinc-800"
               : "border-l border-muted ml-2 px-2 mt-2 text-zinc-900 dark:text-foreground"
