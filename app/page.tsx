@@ -152,6 +152,7 @@ export default function Home() {
           {newAssistant && (
             <AssistantSwitchDialog
               newAssistant={newAssistant}
+              threadId={thread?.id}
               onCallback={(assistant) => {
                 setAssistant(assistant);
                 resetThread();
