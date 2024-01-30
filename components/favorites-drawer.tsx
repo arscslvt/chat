@@ -41,16 +41,11 @@ export default function FavoritesDrawer() {
                 </div>
               </div>
               <div>
-                <Button
-                  variant={"secondary"}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
+                <RemoveButton
+                  onClick={() => {
                     favorites.removeFavorite(f);
                   }}
-                >
-                  Remove
-                </Button>
+                />
               </div>
             </div>
           </Link>
@@ -59,3 +54,30 @@ export default function FavoritesDrawer() {
     </DrawerContent>
   );
 }
+
+const RemoveButton = ({ onClick }: { onClick: () => void }) => {
+  const [confirm, setConfirm] = React.useState<boolean>(false);
+
+  const handleConfirm = () => {
+    if (confirm) return onClick();
+
+    setConfirm(true);
+
+    setTimeout(() => {
+      setConfirm(false);
+    }, 3000);
+  };
+
+  return (
+    <Button
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        handleConfirm();
+      }}
+      variant={confirm ? "destructive" : "secondary"}
+    >
+      {confirm ? "I'm sure" : "Remove"}
+    </Button>
+  );
+};
