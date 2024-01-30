@@ -80,10 +80,11 @@ export default function InputBar({ onSend }: InputBarProps) {
             {openai_models[assistant].capabilities && (
               <Drawer>
                 <DrawerTrigger asChild>
-                  <button className="h-8 min-w-max rounded-md overflow-clip">
-                    <div className="bg-gradient-to-br flex min-h-8 w-max from-blue-500 to-fuchsia-600 p-[1px]">
+                  <button className="relative h-8 min-w-max rounded-md flex flex-col items-center justify-center overflow-clip">
+                    <div className="absolute bg-gradient-to-br min-w-28 max-w-full rounded-full min-h-28 max-h-full from-blue-500 to-fuchsia-600 dark:from-blue-600 dark:to-red-600 animate-rotating-background" />
+                    <div className="relative flex flex-1 w-max m-[1.2px] rounded-md bg-zinc-50 dark:bg-background">
                       <div className="bg-zinc-50 dark:bg-background rounded-md flex items-center px-3">
-                        <p className="whitespace-nowrap text-xs font-medium bg-gradient-to-br from-blue-500 to-fuchsia-600 bg-clip-text text-transparent">
+                        <p className="whitespace-nowrap text-xs font-medium">
                           {"Who's "} {openai_models[assistant].display_name}?
                         </p>
                       </div>

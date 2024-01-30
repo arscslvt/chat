@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   DrawerContent,
   DrawerDescription,
@@ -9,9 +9,35 @@ import { useLocals } from "@/context/locals";
 import { openai_models } from "@/lib/models";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { Input } from "./ui/input";
+import { Thread } from "@/context/messages";
+import { cx } from "class-variance-authority";
+
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function FavoritesDrawer() {
   const { favorites } = useLocals();
+
+  const [search, setSearch] = React.useState<string>("");
+  const [filteredFavorites, setFilteredFavorites] = React.useState<Thread[]>(
+    []
+  );
+
+  const [searchFocus, setSearchFocus] = React.useState<boolean>(false);
+
+  const handleFavortiesSearch = useCallback(() => {
+    if (search === "") return setFilteredFavorites(favorites.favorites);
+
+    const filtered = favorites.favorites.filter((f) =>
+      f.metadata.name.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredFavorites(filtered);
+  }, [search, favorites.favorites]);
+
+  React.useEffect(() => {
+    handleFavortiesSearch();
+  }, [search, handleFavortiesSearch]);
 
   return (
     <DrawerContent className="max-w-2xl mx-auto">
@@ -26,30 +52,64 @@ export default function FavoritesDrawer() {
         </DrawerDescription>
       </DrawerHeader>
 
+      <div className="px-3 flex justify-center">
+        <motion.div
+          initial={{ width: "7rem" }}
+          animate={{
+            width: searchFocus ? "100%" : "7rem",
+          }}
+        >
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            onFocus={() => setSearchFocus(true)}
+            onBlur={() => setSearchFocus(false)}
+            placeholder="Search"
+            className={cx("h-10 text-center w-full")}
+          />
+        </motion.div>
+      </div>
+
       <div className="flex flex-col gap-3 px-3 pt-3 pb-8">
-        {favorites.favorites.map((f) => (
-          <Link href={`/${f.id}`} key={f.id}>
-            <div className="flex items-center gap-4 border border-border rounded-md px-4 py-3 hover:border-primary transition-colors duration-75">
-              <div className="flex-1">
-                <h3 className="font-medium">{f.metadata.name}</h3>
-                <div className="text-sm text-muted-foreground">
-                  <span className="capitalize">{f.metadata.assistantSlug}</span>{" "}
-                  using{" "}
-                  <span className="uppercase">
-                    {openai_models[f.metadata.assistantSlug].gpt}
-                  </span>
+        {filteredFavorites.length === 0 && search !== "" ? (
+          <div className="py-4 text-center text-muted-foreground">
+            No favorites found {":("}
+          </div>
+        ) : null}
+        <AnimatePresence>
+          {filteredFavorites.map((f) => (
+            <motion.div
+              key={f.id}
+              exit={{ opacity: 0, height: 0, scale: 0.6 }}
+              className="overflow-hidden"
+            >
+              <Link href={`/${f.id}`}>
+                <div className="flex items-center gap-4 border border-border rounded-md px-4 py-3 hover:border-primary transition-colors duration-75">
+                  <div className="flex-1">
+                    <h3 className="font-medium">{f.metadata.name}</h3>
+                    <div className="text-sm text-muted-foreground">
+                      <span className="capitalize">
+                        {f.metadata.assistantSlug}
+                      </span>{" "}
+                      using{" "}
+                      <span className="uppercase">
+                        {openai_models[f.metadata.assistantSlug].gpt}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <RemoveButton
+                      onClick={() => {
+                        favorites.removeFavorite(f);
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div>
-                <RemoveButton
-                  onClick={() => {
-                    favorites.removeFavorite(f);
-                  }}
-                />
-              </div>
-            </div>
-          </Link>
-        ))}
+              </Link>
+            </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </DrawerContent>
   );

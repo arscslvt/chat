@@ -72,11 +72,20 @@ const config = {
           from: { opacity: "1", width: "2rem" },
           to: { opacity: "0.7", width: "1rem" },
         },
+        rotatingBackground: {
+          "0%": {
+            transform: "rotate(0deg)",
+          },
+          "100%": {
+            transform: "rotate(360deg)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         shrinking: "shrinking 1s ease-in-out infinite alternate",
+        "rotating-background": "rotatingBackground 3s linear infinite",
       },
     },
   },
