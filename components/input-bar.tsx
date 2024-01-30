@@ -79,7 +79,7 @@ export default function InputBar({ onSend }: InputBarProps) {
             > */}
             {openai_models[assistant].capabilities && (
               <Drawer>
-                <DrawerTrigger>
+                <DrawerTrigger asChild>
                   <button className="h-8 min-w-max rounded-md overflow-clip">
                     <div className="bg-gradient-to-br flex min-h-8 w-max from-blue-500 to-fuchsia-600 p-[1px]">
                       <div className="bg-zinc-50 dark:bg-background rounded-md flex items-center px-3">

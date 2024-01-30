@@ -82,7 +82,7 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
   const handleNewChat = () => {
     if (isFavorite) return router.push("/");
 
-    if (thread && !isFavorite) setNewChat(true);
+    if (thread?.id && !isFavorite) setNewChat(true);
   };
 
   return (

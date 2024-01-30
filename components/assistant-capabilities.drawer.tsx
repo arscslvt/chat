@@ -43,30 +43,3 @@ export default function AssistantCapabilitiesDrawer({ assistant }: Props) {
     </DrawerContent>
   );
 }
-
-const RemoveButton = ({ onClick }: { onClick: () => void }) => {
-  const [confirm, setConfirm] = React.useState<boolean>(false);
-
-  const handleConfirm = () => {
-    if (confirm) return onClick();
-
-    setConfirm(true);
-
-    setTimeout(() => {
-      setConfirm(false);
-    }, 3000);
-  };
-
-  return (
-    <Button
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        handleConfirm();
-      }}
-      variant={confirm ? "destructive" : "secondary"}
-    >
-      {confirm ? "I'm sure" : "Remove"}
-    </Button>
-  );
-};
