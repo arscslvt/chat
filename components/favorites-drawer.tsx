@@ -81,6 +81,8 @@ export default function FavoritesDrawer() {
           {filteredFavorites.map((f) => (
             <motion.div
               key={f.id}
+              initial={searchFocus ? { opacity: 0, height: 0, scale: 0.6 } : {}}
+              animate={{ opacity: 1, height: "auto", scale: 1 }}
               exit={{ opacity: 0, height: 0, scale: 0.6 }}
               className="overflow-hidden"
             >
