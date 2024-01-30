@@ -74,7 +74,6 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
     if (!thread?.id) return;
 
     const isFavorite = favorites.isFavorite(thread.id);
-    console.log("isFavorite: ", isFavorite);
 
     setIsFavorite(isFavorite);
   }, [thread?.id, favorites]);

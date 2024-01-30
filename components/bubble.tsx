@@ -4,8 +4,18 @@ import { Message } from "@/context/messages";
 import { openai_models } from "@/lib/models";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {
+  atomDark as darkCodeTheme,
+  nord as lightCodeTheme,
+} from "react-syntax-highlighter/dist/esm/styles/prism";
 
 import { motion } from "framer-motion";
+import { useTheme } from "next-themes";
+import { Button } from "./ui/button";
+import { CopyIcon } from "@radix-ui/react-icons";
+import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 
 type BubbleProps = Message & {
   displayName: string;
@@ -18,6 +28,15 @@ export default function Bubble({
   displayName,
   timestamp,
 }: BubbleProps) {
+  const { theme } = useTheme();
+
+  const handleCopyCode = (code: string) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(code);
+      toast.success("Copied to clipboard.");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -29,7 +48,7 @@ export default function Bubble({
     >
       <div
         className={cx(
-          "flex flex-col max-w-96",
+          "flex flex-col max-w-full md:max-w-[30rem]",
           from === "sender" ? "items-end" : ""
         )}
       >
@@ -53,7 +72,69 @@ export default function Bubble({
               : "border-l border-muted ml-2 px-2 mt-2 text-zinc-900 dark:text-foreground"
           )}
         >
-          <Markdown remarkPlugins={[remarkGfm]} className={"bubble"}>
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              code(props) {
+                const { children, className, node, ...rest } = props;
+                const match = /language-(\w+)/.exec(className || "");
+
+                const language = match ? match[1] : "code";
+
+                return match ? (
+                  <div className="flex flex-col bg-muted rounded-sm overflow-clip">
+                    <div className="pl-4 flex items-center justify-between">
+                      <span className="uppercase text-xs text-muted-foreground">
+                        {language}
+                      </span>
+                      <div>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Button
+                              size={"icon"}
+                              variant={"ghost"}
+                              onClick={() =>
+                                handleCopyCode(
+                                  String(children).replace(/\n$/, "")
+                                )
+                              }
+                            >
+                              <CopyIcon className="w-4 h-4" />
+                            </Button>
+                          </TooltipTrigger>
+
+                          <TooltipContent
+                            side="left"
+                            className="font-sans !px-3 !py-1.5"
+                          >
+                            Copy code to clipboard
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </div>
+                    <SyntaxHighlighter
+                      // {...rest}
+                      PreTag="div"
+                      language={match[1]}
+                      customStyle={{
+                        borderRadius: "0",
+                        marginTop: "4px",
+                        marginBlock: "0",
+                      }}
+                      style={theme === "dark" ? darkCodeTheme : lightCodeTheme}
+                    >
+                      {String(children).replace(/\n$/, "")}
+                    </SyntaxHighlighter>
+                  </div>
+                ) : (
+                  <code {...rest} className={className}>
+                    {children}
+                  </code>
+                );
+              },
+            }}
+            className={"bubble break-words"}
+          >
             {body[0].type === "text"
               ? body[0]["text"]["value"]
               : "Error: Unknown message type."}

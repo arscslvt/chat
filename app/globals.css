@@ -120,13 +120,13 @@
     font-weight: 500;
   }
 
-  .bubble code {
+  /* .bubble code {
     border-radius: 2px;
     padding: 0 0.2rem;
     background-color: hsl(var(--muted));
     color: hsl(var(--foreground));
     border: 1px solid hsl(var(--border));
-  }
+  } */
 }
 
 @layer utilities {
