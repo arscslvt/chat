@@ -29,7 +29,7 @@ export default function FavoritesDrawer() {
       <div className="flex flex-col gap-3 px-3 pt-3 pb-8">
         {favorites.favorites.map((f) => (
           <Link href={`/${f.id}`} key={f.id}>
-            <div className="flex items-center border border-border rounded-md px-4 py-3 hover:border-primary transition-colors duration-75">
+            <div className="flex items-center gap-4 border border-border rounded-md px-4 py-3 hover:border-primary transition-colors duration-75">
               <div className="flex-1">
                 <h3 className="font-medium">{f.metadata.name}</h3>
                 <div className="text-sm text-muted-foreground">
