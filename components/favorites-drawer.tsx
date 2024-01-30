@@ -66,7 +66,7 @@ export default function FavoritesDrawer() {
             onFocus={() => setSearchFocus(true)}
             onBlur={() => setSearchFocus(false)}
             placeholder="Search"
-            className={cx("h-10 text-center w-full")}
+            className={cx("h-10 text-center w-full text-[16px] sm:text-base")}
           />
         </motion.div>
       </div>
