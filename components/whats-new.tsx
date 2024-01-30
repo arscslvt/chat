@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Alert, AlertDescription, AlertTitle } from "./ui/alert";
-import { Cross1Icon, Share2Icon } from "@radix-ui/react-icons";
+import { Cross1Icon, RocketIcon, Share2Icon } from "@radix-ui/react-icons";
 import { Button } from "./ui/button";
 import { useParams } from "next/navigation";
 
@@ -18,19 +18,22 @@ export default function WhatsNew() {
   const info: WhatsNewProps = {
     description: (
       <>
-        You can now{" "}
-        <span className="font-medium text-blue-500">share a thread</span>. Just
-        click the share button on your browser and send the link to your
-        friends.
+        You can now save your{" "}
+        <span className="font-medium text-blue-500 dark:text-blue-400">
+          Favorite Chats
+        </span>{" "}
+        by clicking the star icon on the top left corner of Chat page.
       </>
     ),
-    id: "8e90d8c6-d5d6-47dc-9ffd-1db0f71b74ae",
-    onPage: "thread",
+    id: "favorites-feature",
+    onPage: "home",
   };
 
   useEffect(() => {
-    if (localStorage.getItem(info.id)) {
-      if (localStorage.getItem(info.id) === "dismissed") {
+    if (localStorage.getItem("whats-new")) {
+      const whatsNew = JSON.parse(localStorage.getItem("whats-new")!);
+
+      if (whatsNew[info.id] === "dismissed") {
         return setShow(false);
       }
     }
@@ -43,13 +46,18 @@ export default function WhatsNew() {
   const handleDismiss = () => {
     setShow(false);
 
-    localStorage.setItem(info.id, "dismissed");
+    const whatsNew = JSON.parse(localStorage.getItem("whats-new")!);
+
+    localStorage.setItem(
+      "whats-new",
+      JSON.stringify({ ...whatsNew, [info.id]: "dismissed" })
+    );
   };
 
   if (show)
     return (
       <Alert variant={"default"} className="relative">
-        <Share2Icon className="w-4 h-4" />
+        <RocketIcon className="w-4 h-4" />
         <AlertTitle>
           <span>{"What's new?"}</span>
           <Button

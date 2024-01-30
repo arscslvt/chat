@@ -19,8 +19,11 @@ import { useAssistant } from "@/context/assistant";
 import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
 import { AnimatePresence, motion } from "framer-motion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { InfoCircledIcon, StarIcon } from "@radix-ui/react-icons";
 import WhatsNew from "@/components/whats-new";
+import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
+import FavoritesDrawer from "@/components/favorites-drawer";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -203,6 +206,18 @@ export default function Home() {
                     Talk with {openai_models[assistant].display_name} by typing
                     a message.
                   </motion.p>
+
+                  <div className="pt-6">
+                    <Drawer>
+                      <DrawerTrigger asChild>
+                        <Button variant={"outline"} className="gap-1">
+                          <StarIcon className="w-3.5 h-3.5" />
+                          Favorite Chats
+                        </Button>
+                      </DrawerTrigger>
+                      <FavoritesDrawer />
+                    </Drawer>
+                  </div>
                 </motion.div>
               ) : (
                 <div className="flex flex-col">

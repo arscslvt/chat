@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 
 import Link from "next/link";
 import {
+  Drawer,
   DrawerContent,
   DrawerDescription,
   DrawerHeader,
@@ -18,6 +19,8 @@ import {
   MoonIcon,
   PlusIcon,
   QuestionMarkIcon,
+  StarFilledIcon,
+  StarIcon,
   SunIcon,
 } from "@radix-ui/react-icons";
 import {
@@ -27,30 +30,75 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useTheme } from "next-themes";
+import { useMessages } from "@/context/messages";
+import { toast } from "sonner";
+import { useLocals } from "@/context/locals";
 
 interface Props {
   title: string;
   tooltip?: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
+
+  isFavorite?: boolean;
 }
 
 export default function Toolbar({ title, tooltip, subtitle }: Props) {
   const { theme, setTheme } = useTheme();
+  const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
+
+  const { thread } = useMessages();
+  const { favorites } = useLocals();
+
+  const handleFavorite = () => {
+    if (!thread?.id) return;
+
+    if (isFavorite) {
+      favorites.removeFavorite(thread);
+      toast("Removed from favorites.");
+    } else {
+      favorites.addFavorite(thread);
+      toast("Added to favorites.", {
+        description: "You can access it from 'New Chat' page.",
+      });
+    }
+
+    setIsFavorite(!isFavorite);
+  };
+
+  useEffect(() => {
+    if (!thread?.id) return;
+
+    const isFavorite = favorites.isFavorite(thread.id);
+    console.log("isFavorite: ", isFavorite);
+
+    setIsFavorite(isFavorite);
+  }, [thread?.id, favorites]);
 
   return (
     <div className="w-full flex sticky top-0 left-0 bg-background-dimmed backdrop-blur-xl z-20 px-3">
-      <div className="flex-1 flex justify-start items-center">
-        <DrawerTrigger asChild>
-          <span>
-            <Button variant={"ghost"} className="hidden sm:block">
-              {"Learn more"}
-            </Button>
-            <Button variant={"secondary"} size={"icon"} className="sm:hidden">
-              <QuestionMarkIcon width={22} />
-            </Button>
-          </span>
-        </DrawerTrigger>
-        <LearnMoreDrawer />
+      <div className="flex-1 flex justify-start items-center gap-3">
+        <Drawer shouldScaleBackground>
+          <DrawerTrigger asChild>
+            <span>
+              <Button variant={"ghost"} className="hidden sm:block">
+                {"Learn more"}
+              </Button>
+              <Button variant={"secondary"} size={"icon"} className="sm:hidden">
+                <QuestionMarkIcon width={22} />
+              </Button>
+            </span>
+          </DrawerTrigger>
+          <LearnMoreDrawer />
+        </Drawer>
+        {thread?.id && (
+          <Button onClick={handleFavorite} size={"icon"} variant={"secondary"}>
+            {isFavorite ? (
+              <StarFilledIcon className="w-5 h-5 dark:text-blue-400" />
+            ) : (
+              <StarIcon className="w-5 h-5" />
+            )}
+          </Button>
+        )}
       </div>
       <div className="flex-1 flex justify-center items-center h-16">
         <div className="flex flex-col items-center text-sm max-w-full">
@@ -72,7 +120,7 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
           <div className="text-muted">{subtitle}</div>
         </div>
       </div>
-      <div className="flex-1 flex gap-4 justify-end items-center">
+      <div className="flex-1 flex gap-3 justify-end items-center">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant={"ghost"} size={"icon"}>

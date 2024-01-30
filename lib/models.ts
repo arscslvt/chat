@@ -5,11 +5,9 @@ export const openai_models: {
     gpt: "gpt-3.5" | "gpt-4";
     description: string;
     suggestedQueries?: string[];
+    capabilities?: string[];
   };
 } = {
-  //   "gpt-3.5-turbo-16k": "GPT-3.5 Turbo",
-  //   "gpt-4": "GPT-4",
-  //   "gpt-4-1106-preview": "GPT-4 Turbo",
   lucas: {
     id: "asst_Pen2Qdppv1VdieeUtvPQg8XF",
     display_name: "Lucas",
@@ -21,6 +19,7 @@ export const openai_models: {
       "Give me a good joke.",
       "How can I make a chocolate cake?",
     ],
+    capabilities: ["Colloquial talking style", "Code interpretation"],
   },
   rose: {
     id: "asst_DxgR8kIjsWatEp6ot7g4OioJ",
@@ -34,6 +33,11 @@ export const openai_models: {
       "Solve a math problem",
       "What is AI?",
       "What can you do?",
+    ],
+    capabilities: [
+      "Colloquial talking style",
+      "Code interpretation",
+      "Longer and more coherent responses",
     ],
   },
   // elara: {

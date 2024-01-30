@@ -8,7 +8,7 @@ interface AssistantContextProps {
 
 const AssistantContext = React.createContext<AssistantContextProps>({} as any);
 
-export default function AsssistantProvider({
+export default function AssistantProvider({
   children,
 }: {
   children: React.ReactNode;

@@ -20,6 +20,8 @@ interface Thread {
   createdAt: string;
   metadata: {
     [key: string]: any;
+    assistantSlug: string;
+    assistantId: string;
     name: string;
   };
 }
