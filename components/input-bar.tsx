@@ -11,6 +11,8 @@ import { motion } from "framer-motion";
 
 import { toast } from "sonner";
 import { useReferences } from "@/context/references";
+import AssistantCapabilitiesDrawer from "./assistant-capabilities.drawer";
+import { Drawer, DrawerTrigger } from "./ui/drawer";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -70,6 +72,28 @@ export default function InputBar({ onSend }: InputBarProps) {
             className="flex gap-2 overflow-x-auto px-3 no-scrollbar"
             onScroll={handleSuggestedScroll}
           >
+            {/* <motion.span
+              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+            > */}
+            {openai_models[assistant].capabilities && (
+              <Drawer>
+                <DrawerTrigger>
+                  <button className="h-8 min-w-max rounded-md overflow-clip">
+                    <div className="bg-gradient-to-br flex min-h-8 w-max from-blue-500 to-fuchsia-600 p-[1px]">
+                      <div className="bg-zinc-50 dark:bg-background rounded-md flex items-center px-3">
+                        <p className="whitespace-nowrap text-xs font-medium bg-gradient-to-br from-blue-500 to-fuchsia-600 bg-clip-text text-transparent">
+                          {"Who's "} {openai_models[assistant].display_name}?
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                </DrawerTrigger>
+                <AssistantCapabilitiesDrawer assistant={assistant} />
+              </Drawer>
+            )}
+            {/* </motion.span> */}
             {openai_models[assistant].suggestedQueries?.map((query, i) => {
               return (
                 <motion.span

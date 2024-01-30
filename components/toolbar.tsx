@@ -33,6 +33,8 @@ import { useTheme } from "next-themes";
 import { useMessages } from "@/context/messages";
 import { toast } from "sonner";
 import { useLocals } from "@/context/locals";
+import NewChatDialog from "./new-chat.dialog";
+import { useRouter } from "next/navigation";
 
 interface Props {
   title: string;
@@ -46,8 +48,11 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
   const { theme, setTheme } = useTheme();
   const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 
+  const [newChat, setNewChat] = React.useState<boolean>(false);
+
   const { thread } = useMessages();
   const { favorites } = useLocals();
+  const router = useRouter();
 
   const handleFavorite = () => {
     if (!thread?.id) return;
@@ -74,8 +79,22 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
     setIsFavorite(isFavorite);
   }, [thread?.id, favorites]);
 
+  const handleNewChat = () => {
+    if (isFavorite) return router.push("/");
+
+    if (thread && !isFavorite) setNewChat(true);
+  };
+
   return (
     <div className="w-full flex sticky top-0 left-0 bg-background-dimmed backdrop-blur-xl z-20 px-3">
+      {newChat && thread && !isFavorite ? (
+        <NewChatDialog
+          thread={thread}
+          onCancel={() => {
+            setNewChat(false);
+          }}
+        />
+      ) : null}
       <div className="flex-1 flex justify-start items-center gap-3">
         <Drawer shouldScaleBackground>
           <DrawerTrigger asChild>
@@ -159,11 +178,9 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
             Start a new thread
           </TooltipContent>
           <TooltipTrigger asChild>
-            <Link href={"/"}>
-              <Button size={"icon"} variant={"secondary"}>
-                <PlusIcon className="w-5 h-5" />
-              </Button>
-            </Link>
+            <Button size={"icon"} variant={"secondary"} onClick={handleNewChat}>
+              <PlusIcon className="w-5 h-5" />
+            </Button>
           </TooltipTrigger>
         </Tooltip>
       </div>
@@ -173,10 +190,10 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
 
 const LearnMoreDrawer = () => {
   return (
-    <DrawerContent className="pb-6 !w-full">
-      <DrawerHeader className="flex flex-col items-center">
+    <DrawerContent className="pb-6 max-w-2xl mx-auto">
+      <DrawerHeader>
         <DrawerTitle>{"What's Chat?"}</DrawerTitle>
-        <DrawerDescription>
+        <DrawerDescription className="text-center">
           Chat is a tool for generating text and threads from a conversation. It
           uses the OpenAI API to generate text from a first sent message.
         </DrawerDescription>
@@ -196,6 +213,18 @@ const LearnMoreDrawer = () => {
             your data and chats.
           </span>
         </Badge>
+      </div>
+
+      <div className="flex justify-center pt-4">
+        <Link
+          href={"https://openai.com/safety"}
+          target="_blank"
+          rel="noopener noreferrer"
+          title="This will redirect you to OpenAI Safety & Policy page."
+          className="text-sm text-muted-foreground hover:underline"
+        >
+          Learn more about OpenAI Safety & Policy
+        </Link>
       </div>
     </DrawerContent>
   );

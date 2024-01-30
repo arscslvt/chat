@@ -14,7 +14,7 @@ export default function FavoritesDrawer() {
   const { favorites } = useLocals();
 
   return (
-    <DrawerContent>
+    <DrawerContent className="max-w-2xl mx-auto">
       <DrawerHeader>
         <DrawerTitle>
           {favorites.favorites.length > 0 ? "Favorites" : "Empty favorites"}
