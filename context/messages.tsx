@@ -12,6 +12,7 @@ import { openai_models } from "@/lib/models";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { useReferences } from "./references";
 import generateTitle from "@/lib/api/thread/edit/generateTitle";
+import { toast } from "sonner";
 
 interface Thread {
   created_at: string;
@@ -75,6 +76,7 @@ export default function MessagesProvider({
   const getThread = useCallback(
     async (id: string): Promise<Message[]> => {
       const thread: Thread = await apiGetThread(id).catch((e) => {
+        toast.error("We couldn't find that thread. Please check the URL.");
         throw new Error("Error getting thread.");
       });
 

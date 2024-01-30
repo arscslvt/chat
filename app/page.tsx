@@ -195,7 +195,7 @@ export default function Home() {
                     exit={{ opacity: 0, y: -6 }}
                     className="font-medium"
                   >
-                    Ready to chat?
+                    {params.id ? "Loading the chat..." : "Ready to chat?"}
                   </motion.h1>
                   <motion.p
                     initial={{ opacity: 0, y: 10 }}
@@ -204,8 +204,10 @@ export default function Home() {
                     exit={{ opacity: 0, y: -6 }}
                     className="text-muted-foreground text-sm max-w-60 text-center"
                   >
-                    Talk with {openai_models[assistant].display_name} by typing
-                    a message.
+                    {params.id
+                      ? "Wait a few seconds while we load the chat."
+                      : `Talk with ${openai_models[assistant].display_name} by typing
+                    a message.`}
                   </motion.p>
 
                   <div className="pt-6">

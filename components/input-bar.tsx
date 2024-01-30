@@ -62,14 +62,14 @@ export default function InputBar({ onSend }: InputBarProps) {
       {!thread?.id && (
         <div className="relative">
           {queriesShadow !== "left" && (
-            <div className="absolute right-0 w-5 h-full bg-gradient-to-l from-background to-transparent" />
+            <div className="absolute z-20 pointer-events-none right-0 w-5 h-full bg-gradient-to-l from-background to-transparent" />
           )}
           {queriesShadow !== "right" && (
-            <div className="absolute left-0 w-5 h-full bg-gradient-to-r from-background to-transparent" />
+            <div className="absolute z-20 pointer-events-none left-0 w-5 h-full bg-gradient-to-r from-background to-transparent" />
           )}
 
           <motion.div
-            className="flex gap-2 overflow-x-auto px-3 no-scrollbar"
+            className="relative z-0 flex gap-2 overflow-x-auto px-3 no-scrollbar"
             onScroll={handleSuggestedScroll}
           >
             {/* <motion.span
