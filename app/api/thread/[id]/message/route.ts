@@ -3,6 +3,7 @@ import { toThreadMessages } from "../../../utils/messages-parser";
 import openai from "@/app/api/config/openai";
 import { NextResponse } from "next/server";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
+import { isLocal } from "@/lib/utils";
 
 export async function POST(
   req: Request,
@@ -51,6 +52,8 @@ export async function POST(
     const run: Run = await openai.beta.threads.runs.create(threadId, {
       assistant_id: assistantId,
     });
+
+    isLocal && console.log("Run created: ", run);
 
     return NextResponse.json(run);
   } catch (e) {

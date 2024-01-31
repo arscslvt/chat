@@ -120,10 +120,23 @@ export default function MessagesProvider({
     const retrieveRun = async (
       threadId: Thread["id"],
       runId: string
-    ): Promise<boolean> => {
+    ): Promise<"pending" | "satisfied" | "cancelled"> => {
+      if (run === false) return "cancelled";
+
       const _run = await apiGetRun(threadId, runId).catch((e) => {
         console.log("Error getting run: ", e);
       });
+
+      if (
+        _run.status === "cancelling" ||
+        _run.status === "failed" ||
+        _run.status === "cancelled" ||
+        _run.status === "expired"
+      ) {
+        console.log("[RUN] Failed: ", _run);
+        setRunning(false);
+        return "cancelled";
+      }
 
       console.log("[RUN] Processing: ", _run);
 
@@ -137,35 +150,36 @@ export default function MessagesProvider({
           inputRef.current.focus();
         }
         setRunning(false);
-        return true;
+        return "satisfied";
       }
 
-      if (
-        _run.status == "requires_action" &&
-        _run.status == "cancelling" &&
-        _run.status == "failed" &&
-        _run.status == "cancelled" &&
-        _run.status == "expired"
-      ) {
-        console.log("[RUN] Failed: ", _run);
-        setRunning(false);
-        return false;
-      }
-
-      return false;
+      return "pending";
     };
 
     const timer = new Promise((resolve) => setTimeout(resolve, 1500));
 
     if (run && thread) {
       const check = async () => {
+        console.log("Checking run...: ", run);
+
+        if (!run) return;
+
         const res = await retrieveRun(thread.id, run);
-        if (!res) await timer.then(check);
+        if (res === "cancelled") {
+          toast.error(
+            "Something went wrong with your request. Please try again later."
+          );
+          return;
+        }
+
+        if (res === "pending") await timer.then(check);
+
+        return;
       };
 
       check();
     }
-  }, [run, thread, getThread]);
+  }, [run, thread, getThread, references]);
 
   const addMessage = async (message: Message) => {
     setMessages([...messages, message]);
