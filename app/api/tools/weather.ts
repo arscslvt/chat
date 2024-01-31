@@ -3,6 +3,11 @@ import axios from "axios";
 export interface WeatherData {
   city: string;
   temperature: number;
+
+  feels_like?: number;
+  humidity?: number;
+  windSpeed?: number;
+
   description: string;
 }
 

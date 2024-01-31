@@ -96,18 +96,20 @@ const handleFunctionCalling = async ({
     try {
       outputData = {
         city: weather.name,
-        temperature: weather.main.temp,
+        temperature: Number(weather.main.temp.toFixed(0)),
         description: weather.weather[0].description,
+
+        feels_like: Number(weather.main.feels_like.toFixed(0)),
+        humidity: weather.main.humidity,
+        windSpeed: weather.wind.speed,
       } as WeatherData;
     } catch (e) {
       console.log("Error while getting weather: ", e);
     }
   }
 
-  const run = await openai.beta.threads.runs.submitToolOutputs(
-    threadId,
-    runId,
-    {
+  try {
+    await openai.beta.threads.runs.submitToolOutputs(threadId, runId, {
       tool_outputs: [
         {
           tool_call_id: id,
@@ -118,10 +120,10 @@ const handleFunctionCalling = async ({
               }),
         },
       ],
-    }
-  );
+    });
+  } catch (e) {
+    console.log("Error while submitting tool outputs: ", e);
+  }
 
   queuedRuns = queuedRuns.filter((run) => run.id !== id);
-
-  return run;
 };
