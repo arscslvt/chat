@@ -123,7 +123,11 @@ export default function Home() {
               </SelectTrigger>
               <SelectContent align="center">
                 {Object.keys(openai_models).map((model, k) => (
-                  <SelectItem key={k} value={model} className="gap-4 flex">
+                  <SelectItem
+                    key={`select-${k}`}
+                    value={model}
+                    className="gap-4 flex"
+                  >
                     <div className="flex gap-1 flex-col">
                       <span>
                         {openai_models[model].display_name}
@@ -290,7 +294,7 @@ export default function Home() {
                 <div className="flex flex-col gap-3">
                   {messages.map((message, k) => (
                     <Bubble
-                      key={k}
+                      key={`bubble-${k}`}
                       from={message.from}
                       displayName={
                         message.from === "bot"

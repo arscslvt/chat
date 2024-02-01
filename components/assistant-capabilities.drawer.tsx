@@ -31,7 +31,7 @@ export default function AssistantCapabilitiesDrawer({ assistant }: Props) {
         {openai_models[assistant].capabilities
           ? openai_models[assistant].capabilities?.map((f, i) => (
               <Badge
-                key={i}
+                key={`capability-${i}`}
                 variant={"outline"}
                 className="py-2 px-3 text-sm font-medium"
               >

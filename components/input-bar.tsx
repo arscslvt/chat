@@ -98,13 +98,12 @@ export default function InputBar({ onSend }: InputBarProps) {
             {openai_models[assistant].suggestedQueries?.map((query, i) => {
               return (
                 <motion.span
-                  key={i}
+                  key={`query-${i}`}
                   animate={{ opacity: 1, x: 0 }}
                   initial={{ opacity: 0, x: 10 }}
                   transition={{ duration: 0.2, delay: i * 0.1 + 1 }}
                 >
                   <Button
-                    key={i}
                     variant={"outline"}
                     size={"sm"}
                     className="bg-zinc-50 dark:bg-background border-zinc-300 dark:border-border"

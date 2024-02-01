@@ -82,9 +82,9 @@ export default function FavoritesDrawer() {
             </div>
           ) : null}
           <AnimatePresence>
-            {filteredFavorites.map((f) => (
+            {filteredFavorites.map((f, i) => (
               <motion.div
-                key={f.id}
+                key={`favorite-${i}`}
                 initial={
                   searchFocus ? { opacity: 0, height: 0, scale: 0.6 } : {}
                 }
