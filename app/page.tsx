@@ -167,14 +167,17 @@ export default function Home() {
             />
           )}
           {openai_models[assistant].gpt === "gpt-4" && (
-            <Alert>
-              <InfoCircledIcon className="w-4 h-4" />
-              <AlertTitle>{"You're using a GPT-4 based Persona."}</AlertTitle>
-              <AlertDescription>
-                This model is best suited for long-form text generation. <br />
-                Use it only if you need more precise and longer responses.
-              </AlertDescription>
-            </Alert>
+            <div className="px-3">
+              <Alert>
+                <InfoCircledIcon className="w-4 h-4" />
+                <AlertTitle>{"You're using a GPT-4 based Persona."}</AlertTitle>
+                <AlertDescription>
+                  This model is best suited for long-form text generation.{" "}
+                  <br />
+                  Use it only if you need more precise and longer responses.
+                </AlertDescription>
+              </Alert>
+            </div>
           )}
           <motion.div
             className="relative flex-1 flex flex-col pt-4 pb-6 px-3 gap-3"
