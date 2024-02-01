@@ -11,6 +11,7 @@ import {
 } from "./ui/alert-dialog";
 import { openai_models } from "@/lib/models";
 import { useLocals } from "@/context/locals";
+import { useMessages } from "@/context/messages";
 
 interface AssistantSwitchDialogProps {
   newAssistant: keyof typeof openai_models;
@@ -29,6 +30,16 @@ export default function AssistantSwitchDialog({
 }: AssistantSwitchDialogProps) {
   const { favorites } = useLocals();
 
+  const { file, removeFile } = useMessages();
+
+  const beforeCallback = () => {
+    if (openai_models[newAssistant].gpt !== "gpt-4") {
+      if (file) removeFile(file);
+    }
+
+    onCallback(newAssistant);
+  };
+
   return (
     <AlertDialog defaultOpen>
       <AlertDialogContent>
@@ -45,7 +56,7 @@ export default function AssistantSwitchDialog({
 
         <AlertDialogFooter>
           <AlertDialogCancel onClick={onCancel}>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => onCallback(newAssistant)}>
+          <AlertDialogAction onClick={() => beforeCallback()}>
             Switch Assistant
           </AlertDialogAction>
         </AlertDialogFooter>

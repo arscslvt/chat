@@ -13,6 +13,8 @@ import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { useReferences } from "./references";
 import generateTitle from "@/lib/api/thread/edit/generateTitle";
 import { toast } from "sonner";
+import api from "@/lib/api/config";
+import { FileObject } from "openai/resources/files.mjs";
 
 interface Thread {
   created_at: string;
@@ -33,6 +35,7 @@ interface Message {
     type: "text" | "image";
     [key: string]: any;
   }[];
+  files?: FileList;
   name: string;
   timestamp: Date | string;
 }
@@ -41,10 +44,13 @@ interface MessagesContext {
   thread: Thread | null;
   messages: Message[];
   isWriting: boolean;
+  file: FileObject | null;
   getThread: (id: string) => Promise<Message[]>;
   addMessage: (message: Message) => void;
   resetThread: () => void;
   deleteMessage: (message: Message) => void;
+  uploadFile: (file: File) => Promise<FileObject>;
+  removeFile: (file: FileObject) => Promise<void>;
 }
 
 const MessagesContext = React.createContext<MessagesContext>(
@@ -68,6 +74,8 @@ export default function MessagesProvider({
 
   const [run, setRunning] = React.useState<string | false>(false);
   const [isWriting, setIsWriting] = React.useState<boolean>(false);
+
+  const [file, setFile] = React.useState<MessagesContext["file"]>(null);
 
   useEffect(() => {
     setIsWriting(run ? true : false);
@@ -181,6 +189,52 @@ export default function MessagesProvider({
     }
   }, [run, thread, getThread, references]);
 
+  const uploadFile = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const {
+      data,
+    }: {
+      data: FileObject;
+    } = await api
+      .post("/file/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .catch((e) => {
+        throw new Error("Error uploading file: ", e);
+      });
+
+    setFile(data);
+
+    console.log("Uploaded file: ", data);
+
+    return data;
+  };
+
+  const removeFile = async (file: FileObject) => {
+    toast.promise(
+      async () => {
+        const { data } = await api
+          .post(`/file/delete/${file.id}`)
+          .catch((e) => {
+            throw new Error("Error deleting file: ", e);
+          });
+
+        if (data) {
+          setFile(null);
+        }
+      },
+      {
+        success: "File removed.",
+        loading: "Removing file...",
+        error: "Error removing file.",
+      }
+    );
+  };
+
   const addMessage = async (message: Message) => {
     setMessages([...messages, message]);
     setIsWriting(true);
@@ -190,7 +244,7 @@ export default function MessagesProvider({
     if (!_thread?.id) {
       const messageText: string = message.body[0]?.text?.value;
 
-      const r = await createThread(messageText || undefined).catch((e) => {
+      const r = await createThread(messageText).catch((e) => {
         throw new Error("Error creating thread: ", e);
       });
 
@@ -210,9 +264,11 @@ export default function MessagesProvider({
     const receivedMessage: Run = await apiSendMessage(
       body,
       _thread.id,
-      assistantId
+      assistantId,
+      file ? [file] : undefined
     ).catch((e) => {
       setMessages(messages.filter((m) => m !== message));
+      setIsWriting(false);
       throw new Error("Error sending message: ", e);
     });
 
@@ -257,7 +313,7 @@ export default function MessagesProvider({
     return thread;
   };
 
-  const resetThread = useCallback(() => {
+  const resetThread = useCallback(async () => {
     setThread({} as Thread);
     setMessages([]);
 
@@ -274,10 +330,13 @@ export default function MessagesProvider({
         thread,
         messages,
         isWriting,
+        file,
         getThread,
         addMessage,
         resetThread,
         deleteMessage,
+        uploadFile,
+        removeFile,
       }}
     >
       {children}

@@ -4,6 +4,7 @@ import openai from "@/app/api/config/openai";
 import { NextResponse } from "next/server";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { isLocal } from "@/lib/utils";
+import { FileObject } from "openai/resources/files.mjs";
 
 export async function POST(
   req: Request,
@@ -18,9 +19,11 @@ export async function POST(
   const {
     message,
     assistantId,
+    files,
   }: {
     message: Message["body"];
     assistantId: string;
+    files?: FileObject[];
   } = await req.json();
 
   if (!message)
@@ -34,15 +37,11 @@ export async function POST(
     return Response.json({ error: "Missing thread ID" }, { status: 400 });
 
   try {
-    console.log("Sending message to thread: ", threadId);
-    console.log("Message: ", message[0].text);
-
     const msg = await openai.beta.threads.messages.create(threadId, {
       role: "user",
       content: message[0].text.value,
+      file_ids: files?.map((f) => f.id),
     });
-
-    console.log("Message created: ", msg);
   } catch (e) {
     console.error("Error creating message: ", e);
     return NextResponse.error();
@@ -53,7 +52,7 @@ export async function POST(
       assistant_id: assistantId,
     });
 
-    isLocal && console.log("Run created: ", run);
+    // isLocal && console.log("Run created: ", run);
 
     return NextResponse.json(run);
   } catch (e) {

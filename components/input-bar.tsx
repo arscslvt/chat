@@ -7,12 +7,14 @@ import { useMessages } from "@/context/messages";
 import { useAssistant } from "@/context/assistant";
 import { openai_models } from "@/lib/models";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { toast } from "sonner";
 import { useReferences } from "@/context/references";
 import AssistantCapabilitiesDrawer from "./assistant-capabilities.drawer";
 import { Drawer, DrawerTrigger } from "./ui/drawer";
+import { FileIcon, TrashIcon, UploadIcon } from "@radix-ui/react-icons";
+import { Badge } from "./ui/badge";
 
 interface InputBarProps {
   onSend: (message: string) => void;
@@ -25,12 +27,13 @@ export default function InputBar({ onSend }: InputBarProps) {
     "left" | "right" | "both"
   >("right");
 
-  const { thread, isWriting } = useMessages();
+  const { thread, isWriting, uploadFile, file, removeFile } = useMessages();
   const { assistant } = useAssistant();
 
   const { references, addReference } = useReferences();
 
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const fileRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     addReference("messageInput", inputRef);
@@ -51,6 +54,29 @@ export default function InputBar({ onSend }: InputBarProps) {
     else setQueriesShadow("both");
   };
 
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files;
+    if (!file) return;
+
+    toast.promise(
+      new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file[0]);
+        reader.onload = async () => {
+          await uploadFile(file[0]);
+
+          resolve(reader.result);
+        };
+        reader.onerror = (error) => reject(error);
+      }),
+      {
+        loading: "Uploading file...",
+        success: "File uploaded!",
+        error: "Failed to upload file",
+      }
+    );
+  };
+
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.focus();
@@ -59,7 +85,28 @@ export default function InputBar({ onSend }: InputBarProps) {
 
   return (
     <div className="flex flex-col gap-3">
-      {!thread?.id && (
+      {file && (
+        <div className="flex items-center gap-2 px-3 overflow-y-auto no-scrollbar">
+          <Badge
+            variant={"outline"}
+            className="group hover:pr-0.5 transition-all whitespace-nowrap"
+          >
+            <FileIcon className="h-4 w-4" />
+            <span className="pl-1">{file.filename || "Unknown file"}</span>
+            <Button
+              size={"icon"}
+              variant={"ghost"}
+              className="opacity-0 w-0 overflow-clip group-hover:w-9 group-hover:opacity-100 transition-all"
+              onClick={() => {
+                removeFile(file);
+              }}
+            >
+              <TrashIcon className="h-4 w-4" />
+            </Button>
+          </Badge>
+        </div>
+      )}
+      {!thread?.id && !file && (
         <div className="relative">
           {queriesShadow !== "left" && (
             <div className="absolute z-20 pointer-events-none right-0 w-5 h-full bg-gradient-to-l from-background to-transparent" />
@@ -117,10 +164,53 @@ export default function InputBar({ onSend }: InputBarProps) {
           </motion.div>
         </div>
       )}
-      <div className="flex items-center gap-2 px-3 min-h-[3rem]">
+      <div className="flex items-center px-3 min-h-[3rem]">
+        <AnimatePresence>
+          {openai_models[assistant].gpt === "gpt-4" && (
+            <motion.span
+              initial={{ opacity: 0, scale: 0.5, width: 0 }}
+              animate={{ opacity: 1, scale: 1, width: 48, marginRight: 8 }}
+              exit={{ opacity: 0, scale: 0.5, width: 0, marginRight: 0 }}
+              transition={{ duration: 0.2, delay: 0.1 }}
+            >
+              <Tooltip>
+                <TooltipContent>
+                  Upload a file to send to{" "}
+                  {openai_models[assistant].display_name}
+                </TooltipContent>
+                <TooltipTrigger asChild>
+                  <Button
+                    size={"icon"}
+                    variant={"secondary"}
+                    className="relative h-12 w-12 aspect-square ring-1 ring-zinc-300 bg-zinc-50 dark:bg-background dark:ring-border"
+                    onClick={() => {
+                      if (fileRef.current) fileRef.current.click();
+                    }}
+                    disabled={isWriting || file ? true : false}
+                  >
+                    <Badge
+                      variant={"outline"}
+                      className="absolute -bottom-1 mx-auto !text-[10px] bg-background-dimmed pointer-events-none"
+                    >
+                      BETA
+                    </Badge>
+                    <UploadIcon className="h-5 w-5" />
+                  </Button>
+                </TooltipTrigger>
+              </Tooltip>
+            </motion.span>
+          )}
+        </AnimatePresence>
+        <input
+          type="file"
+          className="hidden"
+          accept="image/*,application/pdf,.docx, .doc, .txt, .csv, .xls, .xlsx"
+          ref={fileRef}
+          onChange={handleFileUpload}
+        />
         <Input
           placeholder="Type a message"
-          className="h-[3rem] flex-1 text-base sm:text-sm bg-zinc-50 dark:bg-background border-zinc-300 dark:border-input shadow-none hover:pl-4 focus:pl-3 focus:shadow-lg focus:!border-zinc-400 focus:!ring-transparent transition-all"
+          className="h-[3rem] mr-2 flex-1 text-base sm:text-sm bg-zinc-50 dark:bg-background border-zinc-300 dark:border-input shadow-none hover:pl-4 focus:pl-3 focus:shadow-lg focus:!border-zinc-400 focus:!ring-transparent transition-all"
           value={value}
           onInput={(e) => setValue(e.currentTarget.value)}
           onKeyDown={(e) => {

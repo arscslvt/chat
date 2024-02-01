@@ -82,7 +82,7 @@ export default function Bubble({
                 const language = match ? match[1] : "code";
 
                 return match ? (
-                  <div className="flex flex-col bg-muted rounded-sm overflow-clip">
+                  <div className="flex flex-col bg-muted rounded-sm overflow-clip my-3">
                     <div className="pl-4 flex items-center justify-between">
                       <span className="uppercase text-xs text-muted-foreground">
                         {language}

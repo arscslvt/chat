@@ -8,14 +8,14 @@ import { useMessages } from "@/context/messages";
 
 export default function AssistantSwitchSelect() {
   const { assistant, setAssistant } = useAssistant();
-  const { thread, resetThread } = useMessages();
+  const { thread, resetThread, file } = useMessages();
 
   const [newAssistant, setNewAssistant] = React.useState<
     keyof typeof openai_models | null
   >(null);
 
   const handleAssistantSwitch = (assistant: keyof typeof openai_models) => {
-    if (thread?.id) {
+    if (thread?.id || file) {
       return setNewAssistant(assistant as keyof typeof openai_models);
     }
 

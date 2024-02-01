@@ -15,8 +15,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <>
       <ReferencesProvider>
         <AssistantProvider>
-          <LocalsProvider>
-            <MessagesProvider>
+          <MessagesProvider>
+            <LocalsProvider>
               <ThemeProvider
                 attribute="class"
                 defaultTheme="system"
@@ -28,8 +28,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                   <Drawer shouldScaleBackground={true}>{children}</Drawer>
                 </TooltipProvider>
               </ThemeProvider>
-            </MessagesProvider>
-          </LocalsProvider>
+            </LocalsProvider>
+          </MessagesProvider>
         </AssistantProvider>
       </ReferencesProvider>
     </>
