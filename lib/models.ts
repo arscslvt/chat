@@ -1,18 +1,22 @@
-export const openai_models: {
-  [key: string]: {
-    id: string;
-    display_name: string;
-    gpt: "gpt-3.5" | "gpt-4";
-    description: string;
-    suggestedQueries?: string[];
-    capabilities?: string[];
-  };
+interface Model {
+  id: string;
+  display_name: string;
+  gpt: "gpt-3.5" | "gpt-4";
+  description: string;
+  suggestedQueries?: string[];
+  capabilities?: string[];
+
+  avatar?: string;
+}
+
+export const openai_models_list: {
+  [key: string]: Model;
 } = {
   lucas: {
     id: "asst_Pen2Qdppv1VdieeUtvPQg8XF",
     display_name: "Lucas",
     gpt: "gpt-3.5",
-    description: "Lucas is a chatbot suited for colloquial conversations.",
+    description: "Chatbot suited for colloquial conversations.",
     suggestedQueries: [
       "Tell me a story",
       "What is the best programming language?",
@@ -20,13 +24,15 @@ export const openai_models: {
       "How can I make a chocolate cake?",
     ],
     capabilities: ["Colloquial talking style", "Code interpretation"],
+
+    avatar: "/assets/bots/lucas/avatar.jpg",
   },
   rose: {
     id: "asst_DxgR8kIjsWatEp6ot7g4OioJ",
     display_name: "Rose",
     gpt: "gpt-4",
     description:
-      "Rose is a chatbot suited for colloquial conversations. More advanced than Lucas.",
+      "Chatbot suited for colloquial conversations. More advanced than Lucas.",
     suggestedQueries: [
       "Suggest me a recipe",
       "Generate a poem",
@@ -39,6 +45,7 @@ export const openai_models: {
       "Code interpretation",
       "Longer and more coherent responses",
     ],
+    avatar: "/assets/bots/rose/avatar.jpg",
   },
   // elara: {
   //   id: "asst_bDFBbscqsbQH6s0mZmKBnU4I",
@@ -79,3 +86,13 @@ export const openai_models: {
     ],
   },
 };
+
+const active_models: string[] = ["lucas", "rose"];
+
+export const openai_models: {
+  [key: string]: Model;
+} = Object.fromEntries(
+  Object.entries(openai_models_list).filter(([key, value]) =>
+    active_models.includes(key)
+  )
+);
