@@ -3,13 +3,7 @@
 import Bubble, { BubbleWriting } from "@/components/bubble";
 import InputBar from "@/components/input-bar";
 import Toolbar from "@/components/toolbar";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
+
 import { Message, useMessages } from "@/context/messages";
 import { openai_models } from "@/lib/models";
 import React, { useEffect } from "react";
@@ -25,6 +19,8 @@ import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import FavoritesDrawer from "@/components/favorites-drawer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import AssistantSwitchSelect from "@/components/assistant-switch.select";
+import AssistantSwitchTabs from "@/components/assistant-switch.tabs";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -92,7 +88,7 @@ export default function Home() {
     >
       <div className="flex flex-col w-screen flex-1 h-max items-center">
         <Toolbar
-          title={thread?.id ? "Chat" : "Start a new chat"}
+          // title={thread?.id ? "Chat" : "Start a new chat"}
           tooltip={
             thread ? (
               <div className="text-center flex flex-col gap-1.5">
@@ -107,46 +103,7 @@ export default function Home() {
               "Type a message to start a new thread."
             )
           }
-          subtitle={
-            <Select
-              defaultValue={openai_models.lucas.id}
-              value={assistant as string}
-              onValueChange={(assistant) => handleAssistantSwitch(assistant)}
-            >
-              <SelectTrigger className="border-0 shadow-none text-muted-foreground outline-none h-6 focus:ring-0">
-                <span className="mr-1">
-                  Talking with{" "}
-                  <span className="text-foreground">
-                    {openai_models[assistant].display_name}
-                  </span>
-                </span>
-              </SelectTrigger>
-              <SelectContent align="center">
-                {Object.keys(openai_models).map((model, k) => (
-                  <SelectItem
-                    key={`select-${k}`}
-                    value={model}
-                    className="gap-4 flex"
-                  >
-                    <div className="flex gap-1 flex-col">
-                      <span>
-                        {openai_models[model].display_name}
-                        <Badge
-                          variant={"outline"}
-                          className="font-normal ml-2 uppercase"
-                        >
-                          {openai_models[model].gpt}
-                        </Badge>
-                      </span>
-                      <span className="text-xs text-muted-foreground max-w-44">
-                        {openai_models[model].description}
-                      </span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          }
+          subtitle={<AssistantSwitchTabs />}
         />
 
         <div className="px-3">
@@ -174,7 +131,10 @@ export default function Home() {
             <div className="px-3">
               <Alert>
                 <InfoCircledIcon className="w-4 h-4" />
-                <AlertTitle>{"You're using a GPT-4 based Persona."}</AlertTitle>
+                <AlertTitle>
+                  {"You're"} using a <span className="vibrant">GPT-4</span>{" "}
+                  based Persona.
+                </AlertTitle>
                 <AlertDescription>
                   This model is best suited for long-form text generation.{" "}
                   <br />

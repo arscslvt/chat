@@ -10,6 +10,7 @@ import { openai_models } from "@/lib/models";
 import { Button } from "./ui/button";
 import Link from "next/link";
 import { Badge } from "./ui/badge";
+import { cx } from "class-variance-authority";
 
 interface Props {
   assistant: keyof typeof openai_models;
@@ -27,7 +28,24 @@ export default function AssistantCapabilitiesDrawer({ assistant }: Props) {
         </DrawerDescription>
       </DrawerHeader>
 
-      <div className="flex flex-wrap justify-center gap-3 px-3 pt-3 pb-8">
+      <div>
+        <div className="flex justify-center text-sm pb-2">
+          <p>
+            Based on{" "}
+            <span
+              className={cx(
+                "uppercase font-medium",
+                openai_models[assistant].gpt === "gpt-4" && "vibrant"
+              )}
+            >
+              {openai_models[assistant].gpt}
+            </span>{" "}
+            model.
+          </p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap justify-center gap-3 px-6 pt-3 pb-8">
         {openai_models[assistant].capabilities
           ? openai_models[assistant].capabilities?.map((f, i) => (
               <Badge

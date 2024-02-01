@@ -37,7 +37,7 @@ import NewChatDialog from "./new-chat.dialog";
 import { useRouter } from "next/navigation";
 
 interface Props {
-  title: string;
+  title?: string;
   tooltip?: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
 
@@ -120,21 +120,23 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
       </div>
       <div className="flex-1 flex justify-center items-center h-16">
         <div className="flex flex-col items-center text-sm max-w-full">
-          <Tooltip>
-            <TooltipContent>{tooltip}</TooltipContent>
-            <TooltipTrigger className="w-full max-w-full">
-              <h1
-                className="font-medium text-ellipsis max-w-full overflow-hidden lg:whitespace-nowrap"
-                style={{
-                  textOverflow: "ellipsis",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {title}
-              </h1>
-            </TooltipTrigger>
-          </Tooltip>
+          {title && (
+            <Tooltip>
+              <TooltipContent>{tooltip}</TooltipContent>
+              <TooltipTrigger className="w-full max-w-full">
+                <h1
+                  className="font-medium text-ellipsis max-w-full overflow-hidden lg:whitespace-nowrap"
+                  style={{
+                    textOverflow: "ellipsis",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {title}
+                </h1>
+              </TooltipTrigger>
+            </Tooltip>
+          )}
           <div className="text-muted">{subtitle}</div>
         </div>
       </div>

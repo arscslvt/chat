@@ -34,6 +34,9 @@
     --ring: 240 10% 3.9%;
 
     --radius: 1.3rem;
+
+    --vibrant-start: #604bff;
+    --vibrant-end: #df33df;
   }
 
   .dark {
@@ -65,6 +68,9 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
+
+    --vibrant-start: #5c9aff;
+    --vibrant-end: #dc44f0;
   }
 }
 
@@ -118,6 +124,17 @@
   .bubble h4 {
     padding: 0.2rem 0;
     font-weight: 500;
+  }
+
+  .vibrant {
+    background: linear-gradient(
+      90deg,
+      var(--vibrant-start) 0%,
+      var(--vibrant-end) 100%
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   /* .bubble code {
