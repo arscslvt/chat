@@ -221,6 +221,17 @@ export default function MessagesProvider({
 
     setFile(data);
 
+    if (thread) {
+      const updatedThread = {
+        ...thread,
+        files: thread.files ? [...thread.files, data] : [data],
+      };
+
+      setThread(updatedThread);
+
+      handleFavoriteUpdate(updatedThread);
+    }
+
     console.log("Uploaded file: ", data);
 
     return data;
