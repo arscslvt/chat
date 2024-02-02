@@ -73,14 +73,6 @@ export default function Home() {
     });
   }, [mainRef, messages]);
 
-  const handleAssistantSwitch = (assistant: keyof typeof openai_models) => {
-    if (thread?.id) {
-      setNewAssistant(assistant as keyof typeof openai_models);
-    }
-
-    setAssistant(assistant as keyof typeof openai_models);
-  };
-
   return (
     <main
       className="flex items-center overflow-y-auto w-full min-h-dvh max-h-dvh flex-col"

@@ -59,40 +59,43 @@ export const openai_models_list: {
   //     "Boost user engagement?",
   //   ],
   // },
-  alex: {
-    id: "asst_5axiTFCgM6pSzCm39ddnpGjk",
-    display_name: "Alex",
-    gpt: "gpt-4",
-    description:
-      "Alex is an agent suited for Next.js coding and design topics.",
-    suggestedQueries: [
-      "How to make a Next.js app",
-      "How to use Tailwind CSS in Next.js",
-      "How to call APIs",
-      "How to enable TypeScript",
-    ],
-  },
-  steve: {
-    id: "asst_NyMIGJVIRpZDdHTCq1QBTCRH",
-    display_name: "Steve",
-    gpt: "gpt-4",
-    description:
-      "Steve is a super Minecraft player. He knows everything about the game.",
-    suggestedQueries: [
-      "How to build a house",
-      "How to get diamonds",
-      "How to get to the Nether",
-      "How to get to the End",
-    ],
-  },
+  // alex: {
+  //   id: "asst_5axiTFCgM6pSzCm39ddnpGjk",
+  //   display_name: "Alex",
+  //   gpt: "gpt-4",
+  //   description:
+  //     "Alex is an agent suited for Next.js coding and design topics.",
+  //   suggestedQueries: [
+  //     "How to make a Next.js app",
+  //     "How to use Tailwind CSS in Next.js",
+  //     "How to call APIs",
+  //     "How to enable TypeScript",
+  //   ],
+  // },
+  // steve: {
+  //   id: "asst_NyMIGJVIRpZDdHTCq1QBTCRH",
+  //   display_name: "Steve",
+  //   gpt: "gpt-4",
+  //   description:
+  //     "Steve is a super Minecraft player. He knows everything about the game.",
+  //   suggestedQueries: [
+  //     "How to build a house",
+  //     "How to get diamonds",
+  //     "How to get to the Nether",
+  //     "How to get to the End",
+  //   ],
+  // },
 };
 
 const active_models: string[] = ["lucas", "rose"];
 
 export const openai_models: {
   [key: string]: Model;
-} = Object.fromEntries(
-  Object.entries(openai_models_list).filter(([key, value]) =>
-    active_models.includes(key)
-  )
-);
+} = openai_models_list;
+// export const openai_models: {
+//   [key: string]: Model;
+// } = Object.fromEntries(
+//   Object.entries(openai_models_list).filter(([key, value]) =>
+//     active_models.includes(key)
+//   )
+// );
