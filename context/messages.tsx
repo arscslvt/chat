@@ -15,6 +15,7 @@ import generateTitle from "@/lib/api/thread/edit/generateTitle";
 import { toast } from "sonner";
 import api from "@/lib/api/config";
 import { FileObject } from "openai/resources/files.mjs";
+import { useLocals } from "./locals";
 
 interface Thread {
   created_at: string;
@@ -27,6 +28,7 @@ interface Thread {
     assistantId: string;
     name: string;
   };
+  files?: FileObject[];
 }
 
 interface Message {
@@ -66,6 +68,7 @@ export default function MessagesProvider({
   const params = useParams<{ id: string }>();
 
   const { assistant, setAssistant } = useAssistant();
+  const { favorites } = useLocals();
 
   const [thread, setThread] = React.useState<MessagesContext["thread"]>(null);
   const [messages, setMessages] = React.useState<MessagesContext["messages"]>(
@@ -80,6 +83,15 @@ export default function MessagesProvider({
   useEffect(() => {
     setIsWriting(run ? true : false);
   }, [run]);
+
+  useEffect(() => {
+    if (thread) {
+      if (favorites.isFavorite(thread.id)) {
+        const fromLocal = favorites.favorites.find((f) => f.id === thread.id);
+        setFile(fromLocal?.files?.[0] || null);
+      }
+    }
+  }, [thread, favorites]);
 
   const getThread = useCallback(
     async (id: string): Promise<Message[]> => {
@@ -225,6 +237,16 @@ export default function MessagesProvider({
 
         if (data) {
           setFile(null);
+          if (thread) {
+            const updatedThread = {
+              ...thread,
+              files: thread.files?.filter((f) => f.id !== file.id),
+            };
+
+            setThread(updatedThread);
+
+            handleFavoriteUpdate(updatedThread);
+          }
         }
       },
       {
@@ -272,9 +294,29 @@ export default function MessagesProvider({
       throw new Error("Error sending message: ", e);
     });
 
+    const files = file ? [file] : undefined;
+
+    if (thread && files) {
+      const updatedThread = {
+        ...thread,
+        files: thread.files ? [...thread.files, ...files] : files,
+      };
+
+      setThread(updatedThread);
+      handleFavoriteUpdate(updatedThread);
+    }
+
     setRunning(receivedMessage.id);
 
     console.log("Received message: ", receivedMessage);
+  };
+
+  const handleFavoriteUpdate = (thread: Thread) => {
+    const isFavorite = favorites.isFavorite(thread.id);
+
+    if (!isFavorite) return;
+
+    favorites.updateFavorite(thread);
   };
 
   const handleTitleGeneration = async (threadId: string, message: string) => {

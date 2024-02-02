@@ -13,10 +13,10 @@ import React from "react";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <>
-      <ReferencesProvider>
-        <AssistantProvider>
-          <MessagesProvider>
-            <LocalsProvider>
+      <LocalsProvider>
+        <ReferencesProvider>
+          <AssistantProvider>
+            <MessagesProvider>
               <ThemeProvider
                 attribute="class"
                 defaultTheme="system"
@@ -28,10 +28,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
                   <Drawer shouldScaleBackground={true}>{children}</Drawer>
                 </TooltipProvider>
               </ThemeProvider>
-            </LocalsProvider>
-          </MessagesProvider>
-        </AssistantProvider>
-      </ReferencesProvider>
+            </MessagesProvider>
+          </AssistantProvider>
+        </ReferencesProvider>
+      </LocalsProvider>
     </>
   );
 }
