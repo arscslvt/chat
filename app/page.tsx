@@ -1,4 +1,6 @@
 "use client";
+import React, { useEffect } from "react";
+import { useParams } from "next/navigation";
 
 import Bubble, { BubbleWriting } from "@/components/bubble";
 import InputBar from "@/components/input-bar";
@@ -6,9 +8,7 @@ import Toolbar from "@/components/toolbar";
 
 import { Message, useMessages } from "@/context/messages";
 import { openai_models } from "@/lib/models";
-import React, { useEffect } from "react";
 import dayjs from "dayjs";
-import { useParams } from "next/navigation";
 import { useAssistant } from "@/context/assistant";
 import AssistantSwitchDialog from "@/components/assistant-switch.dialog";
 import { AnimatePresence, motion } from "framer-motion";
@@ -19,7 +19,6 @@ import { Drawer, DrawerTrigger } from "@/components/ui/drawer";
 import FavoritesDrawer from "@/components/favorites-drawer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import AssistantSwitchSelect from "@/components/assistant-switch.select";
 import AssistantSwitchTabs from "@/components/assistant-switch.tabs";
 
 export default function Home() {
@@ -28,7 +27,7 @@ export default function Home() {
     keyof typeof openai_models | null
   >(null);
 
-  const { thread, messages, isWriting, addMessage, getThread, resetThread } =
+  const { thread, messages, isWriting, addMessage, resetThread } =
     useMessages();
 
   const params = useParams<{ id: string }>();
