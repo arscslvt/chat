@@ -74,15 +74,15 @@ export default function Home() {
 
   return (
     <main
-      className="flex items-center overflow-y-auto w-full min-h-dvh max-h-dvh flex-col"
+      className="flex max-h-dvh min-h-dvh w-full flex-col items-center overflow-y-auto"
       ref={mainRef}
     >
-      <div className="flex flex-col w-screen flex-1 h-max items-center">
+      <div className="flex h-max w-screen flex-1 flex-col items-center">
         <Toolbar
           // title={thread?.id ? "Chat" : "Start a new chat"}
           tooltip={
             thread ? (
-              <div className="text-center flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1.5 text-center">
                 {thread?.metadata?.name && (
                   <p className="font-medium">{thread?.metadata?.name}</p>
                 )}
@@ -101,7 +101,7 @@ export default function Home() {
           <WhatsNew />
         </div>
 
-        <div className="relative z-0 w-screen min-h-full h-max md:w-2/3 lg:w-3/5 xl:w-3/6 flex-1 flex flex-col pt-3">
+        <div className="relative z-0 flex h-max min-h-full w-screen flex-1 flex-col pt-3 md:w-2/3 lg:w-3/5 xl:w-3/6">
           {newAssistant && (
             <AssistantSwitchDialog
               newAssistant={newAssistant}
@@ -121,7 +121,7 @@ export default function Home() {
           {openai_models[assistant].gpt === "gpt-4" && (
             <div className="px-3">
               <Alert>
-                <InfoCircledIcon className="w-4 h-4" />
+                <InfoCircledIcon className="h-4 w-4" />
                 <AlertTitle>
                   {"You're"} using a <span className="vibrant">GPT-4</span>{" "}
                   based Persona.
@@ -135,7 +135,7 @@ export default function Home() {
             </div>
           )}
           <motion.div
-            className="relative flex-1 flex flex-col pt-4 pb-6 px-3 gap-3"
+            className="relative flex flex-1 flex-col gap-3 px-3 pb-6 pt-4"
             initial={{
               justifyContent: isEmpty ? "center" : "flex-start",
             }}
@@ -143,7 +143,7 @@ export default function Home() {
               justifyContent: isEmpty ? "center" : "flex-start",
             }}
           >
-            <div className="pb-4 pt-6 flex flex-col items-center justify-center select-none">
+            <div className="flex select-none flex-col items-center justify-center pb-4 pt-6">
               <motion.div
                 initial={{
                   scale: 0.6,
@@ -168,7 +168,7 @@ export default function Home() {
                 className="pointer-events-auto"
                 dragSnapToOrigin
               >
-                <Avatar className="w-20 h-20 pointer-events-none">
+                <Avatar className="pointer-events-none h-20 w-20">
                   <AvatarImage src={openai_models[assistant].avatar} />
                   <AvatarFallback>
                     {openai_models[assistant].display_name[0]}
@@ -179,7 +179,7 @@ export default function Home() {
             <AnimatePresence>
               (
               <motion.div
-                className="w-full flex flex-col justify-center items-center"
+                className="flex w-full flex-col items-center justify-center"
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{
                   scale: 0.6,
@@ -205,7 +205,7 @@ export default function Home() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: "backOut", delay: 0.4 }}
                   exit={{ opacity: 0, y: -6 }}
-                  className="text-muted-foreground text-sm max-w-60 text-center"
+                  className="text-muted-foreground max-w-60 text-center text-sm"
                 >
                   {!params.id &&
                     `Talk with ${openai_models[assistant].display_name} by typing
@@ -213,14 +213,14 @@ export default function Home() {
                   {params.id &&
                     !thread?.id &&
                     "Wait a few seconds while we load the chat."}
-                  {params.id && thread?.id && thread?.metadata?.name}
+                  {thread?.metadata.name}
                 </motion.p>
 
                 <div className="pt-6">
                   <Drawer>
                     <DrawerTrigger asChild>
                       <Button variant={"outline"} className="gap-1">
-                        <StarIcon className="w-3.5 h-3.5" />
+                        <StarIcon className="h-3.5 w-3.5" />
                         Favorite Chats
                       </Button>
                     </DrawerTrigger>
@@ -270,9 +270,9 @@ export default function Home() {
               )}
             </AnimatePresence>
           </motion.div>
-          <div className="z-20 flex items-center sticky bottom-0 w-full bg-transparent">
-            <div className="absolute z-0 -top-6 left-0 w-full h-10 bg-gradient-to-b via-background from-transparent to-background"></div>
-            <div className="relative z-10 bg-background w-full flex-1 pb-4">
+          <div className="sticky bottom-0 z-20 flex w-full items-center bg-transparent">
+            <div className="via-background to-background absolute -top-6 left-0 z-0 h-10 w-full bg-gradient-to-b from-transparent"></div>
+            <div className="bg-background relative z-10 w-full flex-1 pb-4">
               <InputBar onSend={(message) => handleMessage(message)} />
             </div>
           </div>

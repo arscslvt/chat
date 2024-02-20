@@ -7,8 +7,6 @@ import {
 } from "./ui/drawer";
 
 import { openai_models } from "@/lib/models";
-import { Button } from "./ui/button";
-import Link from "next/link";
 import { Badge } from "./ui/badge";
 import { cx } from "class-variance-authority";
 

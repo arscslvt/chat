@@ -35,6 +35,7 @@
     "clsx": "^2.1.0",
     "dayjs": "^1.11.10",
     "embla-carousel-react": "^8.0.0-rc20",
+    "flagsmith": "^3.22.0",
     "framer-motion": "^11.0.3",
     "moment": "^2.30.1",
     "next": "14.1.0",

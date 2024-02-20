@@ -48,6 +48,7 @@ interface MessagesContext {
   isWriting: boolean;
   file: FileObject | null;
   getThread: (id: string) => Promise<Message[]>;
+  handleTitleGeneration: (threadId: string, message: string) => Promise<void>;
   addMessage: (message: Message) => void;
   resetThread: () => void;
   deleteMessage: (message: Message) => void;
@@ -347,8 +348,15 @@ export default function MessagesProvider({
     console.log("Generated title: ", threadTitle);
 
     if (threadTitle && thread?.metadata) {
-      const _thread = thread as Thread;
-      _thread.metadata.name = threadTitle;
+      console.log("Updated thread with title: ", threadTitle);
+
+      const _thread: Thread = {
+        ...thread,
+        metadata: {
+          ...thread.metadata,
+          name: threadTitle,
+        },
+      };
 
       setThread(_thread);
     }
@@ -385,6 +393,7 @@ export default function MessagesProvider({
         isWriting,
         file,
         getThread,
+        handleTitleGeneration,
         addMessage,
         resetThread,
         deleteMessage,
