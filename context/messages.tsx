@@ -32,6 +32,7 @@ interface Thread {
 }
 
 interface Message {
+  id: number;
   from: "bot" | "sender";
   body: {
     type: "text" | "image";

@@ -41,6 +41,7 @@ export default function Home() {
 
   const handleMessage = (message: string) => {
     const newMessage: Message = {
+      id: 0,
       from: "sender",
       body: [
         {
@@ -246,6 +247,7 @@ export default function Home() {
                   {messages.map((message, k) => (
                     <Bubble
                       key={`bubble-${k}`}
+                      id={k}
                       from={message.from}
                       displayName={
                         message.from === "bot"

@@ -39,9 +39,11 @@ export default function InputBar({ onSend }: InputBarProps) {
     addReference("messageInput", inputRef);
   }, [inputRef, addReference]);
 
-  const handleMessage = () => {
-    if (value.length === 0) return;
-    onSend(value);
+  const handleMessage = (text?: string) => {
+    const _text = text || value;
+
+    if (_text.length === 0) return;
+    onSend(_text);
     setValue("");
   };
 
@@ -154,7 +156,7 @@ export default function InputBar({ onSend }: InputBarProps) {
                     variant={"outline"}
                     size={"sm"}
                     className="bg-zinc-50 dark:bg-background border-zinc-300 dark:border-border"
-                    onClick={() => setValue(query)}
+                    onClick={() => handleMessage(query)}
                   >
                     {query}
                   </Button>

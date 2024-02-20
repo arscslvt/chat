@@ -13,7 +13,11 @@ import {
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
-import { CopyIcon, DotsHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  CopyIcon,
+  DotsHorizontalIcon,
+  Share2Icon,
+} from "@radix-ui/react-icons";
 import { toast } from "sonner";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import {
@@ -51,6 +55,28 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
         error: "Failed to generate thread title.",
       }
     );
+  };
+
+  const handleShare = () => {
+    if (!thread?.id) return;
+    if (body[0]["type"] !== "text") return;
+
+    const message = `Hey, check out this message from the thread "${thread?.metadata?.name}" on Chat by Salvatore Aresco:\n${body[0]["text"]["value"]}.\n\nView the thread: https://chat.salvatorearesco.com/${thread?.id}
+    `;
+
+    if (navigator.share) {
+      navigator.share({
+        title: "A message from Chat by Salvatore Aresco",
+        text: message,
+      });
+    }
+
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(message);
+      toast.message("Message copied to clipboard.", {
+        description: "You can now paste it anywhere and share it with others.",
+      });
+    }
   };
 
   return (
@@ -181,6 +207,13 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
                 <p className="text-xs text-muted-foreground">
                   Extract a thread title from this message.
                 </p>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                className="flex justify-between"
+                onClick={handleShare}
+              >
+                Share Message
+                <Share2Icon />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
