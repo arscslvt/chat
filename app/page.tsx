@@ -213,7 +213,7 @@ export default function Home() {
                   {params.id &&
                     !thread?.id &&
                     "Wait a few seconds while we load the chat."}
-                  {thread?.metadata.name}
+                  {params.id && thread?.metadata?.name}
                 </motion.p>
 
                 <div className="pt-6">

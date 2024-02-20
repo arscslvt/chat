@@ -57,8 +57,14 @@ export async function POST(
           model: "gpt-3.5-turbo",
           messages: [
             {
+              role: "system",
+              content: `
+              I want you to act as a title generator for chats. I will provide you with a chat message, and you will generate one attention-grabbing title. Please keep the title concise, simple and under 6 words, and ensure that the meaning is maintained. Replies will utilize the language type of the topic.
+              `,
+            },
+            {
               role: "user",
-              content: `Generate a chat title from this message: ${generateFrom}. Max 5 words.`,
+              content: generateFrom,
             },
           ],
           n: 1,
