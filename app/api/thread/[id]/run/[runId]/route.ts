@@ -1,4 +1,5 @@
 import openai from "@/app/api/config/openai";
+import { generateImageFromText } from "@/app/api/tools/image";
 import { WeatherData, getWeatherByName } from "@/app/api/tools/weather";
 import { NextResponse } from "next/server";
 
@@ -15,7 +16,7 @@ export async function GET(
     };
   }
 ) {
-  console.log("Requested run info with this params: ", params);
+  // console.log("Requested run info with this params: ", params);
 
   try {
     const run = await openai.beta.threads.runs.retrieve(
@@ -39,7 +40,7 @@ export async function GET(
         const { id, function: fn, type } = toolOutput;
 
         if (queuedRuns.find((run) => run.id === id)) {
-          console.log("Run already queued: ", id);
+          // console.log("Run already queued: ", id);
           return;
         }
 
@@ -106,6 +107,11 @@ const handleFunctionCalling = async ({
     } catch (e) {
       console.log("Error while getting weather: ", e);
     }
+  }
+
+  if (name === "generate_image_from_text") {
+    const image = await generateImageFromText(data["text"]);
+    outputData = image;
   }
 
   try {
