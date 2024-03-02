@@ -1,4 +1,5 @@
 import openai from "@/app/api/config/openai";
+import { browse, browseImages } from "@/app/api/tools/browse";
 import { generateImageFromText } from "@/app/api/tools/image";
 import { WeatherData, getWeatherByName } from "@/app/api/tools/weather";
 import { NextResponse } from "next/server";
@@ -83,6 +84,11 @@ interface HandleFunctionProps {
     data: any;
   };
 }
+
+const functionError = {
+  message: "Something went wrong. No data found.",
+};
+
 const handleFunctionCalling = async ({
   for: { threadId, runId },
   fn: { id, name, data },
@@ -110,8 +116,26 @@ const handleFunctionCalling = async ({
   }
 
   if (name === "generate_image_from_text") {
-    const image = await generateImageFromText(data["text"]);
-    outputData = image;
+    // const image = await generateImageFromText(data["text"]);
+    outputData = functionError;
+  }
+
+  if (name === "browse") {
+    if (data["type"] === "images") {
+      const results = await browseImages({
+        query: data["query"],
+        elements: 5,
+      });
+
+      outputData = results;
+    } else {
+      const results = await browse({
+        query: data["query"],
+        type: data["type"],
+      });
+
+      outputData = results;
+    }
   }
 
   try {
@@ -119,11 +143,12 @@ const handleFunctionCalling = async ({
       tool_outputs: [
         {
           tool_call_id: id,
-          output: outputData
-            ? JSON.stringify(outputData)
-            : JSON.stringify({
-                error: "No data found",
-              }),
+          output:
+            outputData !== null
+              ? JSON.stringify(outputData)
+              : JSON.stringify({
+                  error: "No data found",
+                }),
         },
       ],
     });

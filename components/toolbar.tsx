@@ -3,6 +3,7 @@
 import React, { useEffect } from "react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { Button } from "./ui/button";
+import { useSession } from "next-auth/react";
 
 import Link from "next/link";
 import {
@@ -53,6 +54,8 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
   const { thread } = useMessages();
   const { favorites } = useLocals();
   const router = useRouter();
+
+  const { data } = useSession();
 
   const handleFavorite = () => {
     if (!thread?.id) return;
@@ -108,6 +111,7 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
           </DrawerTrigger>
           <LearnMoreDrawer />
         </Drawer>
+
         {thread?.id && (
           <Button onClick={handleFavorite} size={"icon"} variant={"secondary"}>
             {isFavorite ? (

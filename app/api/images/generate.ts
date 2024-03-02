@@ -4,7 +4,7 @@ export async function generateImage(text: string) {
   console.log("Generating image from text: ", text);
 
   const body = JSON.stringify({
-    prompt: text || "",
+    prompt: "A beautiful painting of a flower.",
     height: 768,
     width: 768,
     num_outputs: 1,
@@ -16,7 +16,6 @@ export async function generateImage(text: string) {
     {
       method: "POST",
       headers: {
-        // Authorization: `Token ${process.env.MODAL_TOKEN_ID}:${process.env.MODAL_TOKEN_SECRET}`,
         Authorization: `Token ${process.env.MODAL_TOKEN_ID}:${process.env.MODAL_TOKEN_SECRET}`,
         "Content-Type": "application/json",
       },

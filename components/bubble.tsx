@@ -26,6 +26,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import Image from "next/image";
+import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 
 type BubbleProps = Message & {
   displayName: string;
@@ -123,6 +125,80 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
             <Markdown
               remarkPlugins={[remarkGfm]}
               components={{
+                ol({ node, ...props }) {
+                  const { children, ...rest } = props;
+
+                  const areChildrenImagesOnly = React.Children.toArray(
+                    children
+                  ).every((child) => {
+                    if (React.isValidElement(child) && child.type === "ol") {
+                      // If child is an <ol> element, iterate through its children
+                      return React.Children.toArray(child.props.children).every(
+                        (li) => {
+                          // Check if each child of <ol> is an <li> element
+                          if (React.isValidElement(li) && li.type === "li") {
+                            // Check if each <li> element contains only <img> elements
+                            return React.Children.toArray(
+                              li.props.children
+                            ).every((img) => {
+                              return (
+                                React.isValidElement(img) && img.type === "img"
+                              );
+                            });
+                          }
+                          // If child of <ol> is not an <li>, return false
+                          return false;
+                        }
+                      );
+                    }
+                    // If child is not an <ol> element, return true
+                    return true;
+                  });
+
+                  console.log("areChildrenImages", areChildrenImagesOnly);
+
+                  if (areChildrenImagesOnly) {
+                    return (
+                      <Carousel className="max-w-full !overflow-clip">
+                        <CarouselContent className="!max-w-full">
+                          {React.Children.toArray(children).map((child, i) => {
+                            if (React.isValidElement(child))
+                              return (
+                                <CarouselItem key={i} className="max-w-max">
+                                  {child}
+                                </CarouselItem>
+                              );
+                          })}
+                        </CarouselContent>
+                      </Carousel>
+                    );
+                  }
+
+                  return <ol {...rest}>{children}</ol>;
+                },
+                img({ node, ...props }) {
+                  return (
+                    <Image
+                      width={
+                        props?.width
+                          ? Number(props?.width)
+                          : props?.height
+                          ? Number(props?.height)
+                          : 200
+                      }
+                      height={
+                        props?.height
+                          ? Number(props?.height)
+                          : props?.width
+                          ? Number(props?.width)
+                          : 200
+                      }
+                      src={props?.src || ""}
+                      className="!w-full h-72 !max-w-full object-cover rounded-sm border border-border"
+                      alt={props?.alt || "Image from Search Results"}
+                    />
+                  );
+                },
                 code(props) {
                   const { children, className, node, ...rest } = props;
                   const match = /language-(\w+)/.exec(className || "");
