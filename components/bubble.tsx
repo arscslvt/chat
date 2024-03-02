@@ -125,6 +125,16 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
             <Markdown
               remarkPlugins={[remarkGfm]}
               components={{
+                a({ node, ...props }) {
+                  return (
+                    <a
+                      referrerPolicy="no-referrer"
+                      target="_blank"
+                      {...props}
+                      className="text-primary underline hover:no-underline underline-offset-3 hover:text-blue-500"
+                    />
+                  );
+                },
                 ol({ node, ...props }) {
                   const { children, ...rest } = props;
 

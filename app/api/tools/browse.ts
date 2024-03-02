@@ -1,4 +1,6 @@
+import axios from "axios";
 import google from "googlethis";
+import { BingSearchResponse } from "../types/bing.type";
 
 interface BrowseProps {
   query: string;
@@ -11,6 +13,38 @@ interface BrowseProps {
     | "translation"
     | "knowledge_panel";
 }
+
+const bingApiEndpoint = process.env.BING_SEARCH_ENDPOINT || "";
+const bingApiKey = process.env.BING_API_KEY;
+
+const browseWithBing = async ({
+  query,
+  elements,
+  type = "results",
+}: BrowseProps) => {
+  const response = await axios
+    .get(bingApiEndpoint, {
+      params: {
+        q: query,
+        count: elements,
+        mkt: "en-US",
+        responseFilter: "Webpages",
+      },
+      headers: {
+        "Ocp-Apim-Subscription-Key": bingApiKey,
+      },
+    })
+    .catch((e) => {
+      console.error("Error while fetching Bing API: ", e);
+      return e;
+    });
+
+  const data = response.data as BingSearchResponse;
+
+  console.log("Response fecthed from Bing 🔎: ", data);
+
+  return data;
+};
 
 const browse = async ({ query, elements, type = "results" }: BrowseProps) => {
   const options = {
@@ -29,7 +63,7 @@ const browse = async ({ query, elements, type = "results" }: BrowseProps) => {
 
   console.log("Response fecthed from Google 🔎: ", reduced);
 
-  console.log("Top 3 results: ", reduced.results.slice(0, 3));
+  //   console.log("Top 3 results: ", reduced.results.slice(0, 3));
 
   return reduced;
 };
@@ -51,4 +85,4 @@ const browseImages = async ({ query, elements }: BrowseImage) => {
   return response;
 };
 
-export { browse, browseImages };
+export { browse, browseWithBing, browseImages };

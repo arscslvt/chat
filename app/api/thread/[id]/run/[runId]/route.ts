@@ -1,5 +1,5 @@
 import openai from "@/app/api/config/openai";
-import { browse, browseImages } from "@/app/api/tools/browse";
+import { browse, browseImages, browseWithBing } from "@/app/api/tools/browse";
 import { generateImageFromText } from "@/app/api/tools/image";
 import { WeatherData, getWeatherByName } from "@/app/api/tools/weather";
 import { NextResponse } from "next/server";
@@ -129,7 +129,7 @@ const handleFunctionCalling = async ({
 
       outputData = results;
     } else {
-      const results = await browse({
+      const results = await browseWithBing({
         query: data["query"],
         type: data["type"],
       });

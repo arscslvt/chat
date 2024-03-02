@@ -134,22 +134,6 @@
     font-weight: 500;
   }
 
-  .bubble a {
-    color: hsl(var(--primary));
-    text-decoration: underline;
-    text-underline-offset: 4px;
-    text-decoration-thickness: 1px;
-
-    border-radius: 6px;
-
-    transition: all 0.2s ease-in-out;
-  }
-
-  .bubble a:hover {
-    background-color: hsl(var(--muted));
-    padding: 0.1rem 0.2rem;
-  }
-
   .vibrant {
     background: linear-gradient(
       90deg,
