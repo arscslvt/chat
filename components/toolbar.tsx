@@ -57,20 +57,22 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
 
   const { data } = useSession();
 
+  useEffect(() => {
+    if (thread && favorites.isFavorite(thread.id)) {
+      return setIsFavorite(true);
+    }
+
+    setIsFavorite(false);
+  }, [favorites, thread]);
+
   const handleFavorite = () => {
     if (!thread?.id) return;
 
     if (isFavorite) {
       favorites.removeFavorite(thread);
-      toast("Removed from favorites.");
     } else {
       favorites.addFavorite(thread);
-      toast("Added to favorites.", {
-        description: "You can access it from 'New Chat' page.",
-      });
     }
-
-    setIsFavorite(!isFavorite);
   };
 
   useEffect(() => {

@@ -43,10 +43,19 @@ interface Message {
   timestamp: Date | string;
 }
 
+type DoingSomething = "thinking" | "typing" | "generating" | "searching";
+export type ThinkingType =
+  | {
+      doing: DoingSomething;
+      on?: string;
+    }
+  | false;
+
 interface MessagesContext {
   thread: Thread | null;
   messages: Message[];
-  isWriting: boolean;
+  isWriting: ThinkingType;
+
   file: FileObject | null;
   getThread: (id: string) => Promise<Message[]>;
   handleTitleGeneration: (threadId: string, message: string) => Promise<void>;
@@ -77,13 +86,39 @@ export default function MessagesProvider({
     []
   );
 
-  const [run, setRunning] = React.useState<string | false>(false);
-  const [isWriting, setIsWriting] = React.useState<boolean>(false);
+  const [run, setRunning] = React.useState<Run | false>(false);
+  const [isWriting, setIsWriting] =
+    React.useState<MessagesContext["isWriting"]>(false);
 
   const [file, setFile] = React.useState<MessagesContext["file"]>(null);
 
   useEffect(() => {
-    setIsWriting(run ? true : false);
+    if (!run) {
+      setIsWriting(false);
+      return;
+    }
+
+    run.required_action?.submit_tool_outputs.tool_calls.forEach((tool) => {
+      console.log("Tool: ", tool);
+
+      if (tool.function.name === "browse") {
+        return setIsWriting({
+          doing: "searching",
+          on: tool.function.arguments,
+        });
+      }
+
+      if (tool.function.name === "get_weather") {
+        return setIsWriting({
+          doing: "searching",
+          on: "weather",
+        });
+      }
+    });
+
+    setIsWriting({
+      doing: "typing",
+    });
   }, [run]);
 
   useEffect(() => {
@@ -150,10 +185,10 @@ export default function MessagesProvider({
       });
 
       if (
-        _run.status === "cancelling" ||
-        _run.status === "failed" ||
-        _run.status === "cancelled" ||
-        _run.status === "expired"
+        _run?.status === "cancelling" ||
+        _run?.status === "failed" ||
+        _run?.status === "cancelled" ||
+        _run?.status === "expired"
       ) {
         console.log("[RUN] Failed: ", _run);
         setRunning(false);
@@ -162,7 +197,7 @@ export default function MessagesProvider({
 
       console.log("[RUN] Processing: ", _run);
 
-      if (_run.status === "completed") {
+      if (_run?.status === "completed") {
         await getThread(threadId).catch((e) => {
           console.log("Error updating thread messages: ", e);
         });
@@ -171,6 +206,7 @@ export default function MessagesProvider({
         if (inputRef.current) {
           inputRef.current.focus();
         }
+
         setRunning(false);
         return "satisfied";
       }
@@ -186,7 +222,7 @@ export default function MessagesProvider({
 
         if (!run) return;
 
-        const res = await retrieveRun(thread.id, run);
+        const res = await retrieveRun(thread.id, run.id);
         if (res === "cancelled") {
           toast.error(
             "Something went wrong with your request. Please try again later."
@@ -272,7 +308,9 @@ export default function MessagesProvider({
 
   const addMessage = async (message: Message) => {
     setMessages([...messages, message]);
-    setIsWriting(true);
+    setIsWriting({
+      doing: "thinking",
+    });
 
     let _thread = thread;
 
@@ -319,7 +357,7 @@ export default function MessagesProvider({
       handleFavoriteUpdate(updatedThread);
     }
 
-    setRunning(receivedMessage.id);
+    setRunning(receivedMessage);
 
     console.log("Received message: ", receivedMessage);
   };
@@ -360,6 +398,10 @@ export default function MessagesProvider({
       };
 
       setThread(_thread);
+
+      if (favorites.isFavorite(threadId)) {
+        favorites.updateFavorite(_thread);
+      }
     }
   };
 

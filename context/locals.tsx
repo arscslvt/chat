@@ -1,5 +1,6 @@
 import React, { use, useEffect, useMemo } from "react";
 import { Thread, useMessages } from "./messages";
+import { toast } from "sonner";
 
 interface LocalsContext {
   favorites: {
@@ -20,20 +21,37 @@ export default function LocalsProvider({
 }) {
   const [_favorites, setFavorites] = React.useState<Thread[]>([]);
 
+  const maxFavorites = 10;
+
   const favorites = useMemo(
     () => ({
       addFavorite: (thread: Thread) => {
+        if (_favorites.length >= maxFavorites) {
+          toast.error(
+            "You can only have 10 favorites. Remove some to add more."
+          );
+          return;
+        }
         const newFavorites = [..._favorites, thread];
 
         setFavorites(newFavorites);
         localStorage.setItem("favorites", JSON.stringify(newFavorites));
+
+        toast.success("Added to favorites.");
       },
 
       removeFavorite: (thread: Thread) => {
         const newFavorites = _favorites.filter((f) => f.id !== thread.id);
 
+        if (newFavorites.length === _favorites.length) {
+          toast.error("Failed to remove from favorites.");
+          return;
+        }
+
         setFavorites(newFavorites);
         localStorage.setItem("favorites", JSON.stringify(newFavorites));
+
+        toast("Removed from favorites.");
       },
 
       updateFavorite: (thread: Thread) => {

@@ -29,6 +29,7 @@
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.4",
     "@radix-ui/react-tooltip": "^1.0.7",
+    "@rive-app/react-canvas": "^4.8.3",
     "@vercel/analytics": "^1.1.2",
     "@vercel/postgres": "^0.7.2",
     "@vercel/postgres-kysely": "^0.7.2",

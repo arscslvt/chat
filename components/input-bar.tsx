@@ -211,7 +211,7 @@ export default function InputBar({ onSend }: InputBarProps) {
           onChange={handleFileUpload}
         />
         <Input
-          placeholder="Type a message"
+          placeholder={`Ask to ${openai_models[assistant].display_name}`}
           className="h-[3rem] mr-2 flex-1 text-base sm:text-sm bg-zinc-50 dark:bg-background border-zinc-300 dark:border-input shadow-none hover:pl-4 focus:pl-3 focus:shadow-lg focus:!border-zinc-400 focus:!ring-transparent transition-all"
           value={value}
           onInput={(e) => setValue(e.currentTarget.value)}
@@ -221,7 +221,7 @@ export default function InputBar({ onSend }: InputBarProps) {
               setValue("");
             }
           }}
-          disabled={isWriting}
+          disabled={isWriting ? true : false}
           ref={inputRef}
         />
         <div className="h-full flex items-center gap-2">

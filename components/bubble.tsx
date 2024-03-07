@@ -1,6 +1,6 @@
 import { cx } from "class-variance-authority";
 import React from "react";
-import { Message, useMessages } from "@/context/messages";
+import { Message, ThinkingType, useMessages } from "@/context/messages";
 import { openai_models } from "@/lib/models";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -28,6 +28,9 @@ import {
 } from "./ui/dropdown-menu";
 import Image from "next/image";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
+import { useLocals } from "@/context/locals";
+import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import SmartImage from "./ui/image";
 
 type BubbleProps = Message & {
   displayName: string;
@@ -36,6 +39,8 @@ type BubbleProps = Message & {
 export default function Bubble({ from, body, name, displayName }: BubbleProps) {
   const { theme } = useTheme();
   const { thread, handleTitleGeneration } = useMessages();
+
+  const { favorites } = useLocals();
 
   const handleCopyCode = (code: string) => {
     if (navigator.clipboard) {
@@ -49,8 +54,9 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
     if (body[0]["type"] !== "text") return;
 
     toast.promise(
-      async () =>
-        await handleTitleGeneration(thread.id, body[0]["text"]["value"]),
+      async () => {
+        await handleTitleGeneration(thread.id, body[0]["text"]["value"]);
+      },
       {
         loading: "Generating thread title...",
         success: "Thread title generated.",
@@ -131,41 +137,20 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
                       referrerPolicy="no-referrer"
                       target="_blank"
                       {...props}
-                      className="text-primary underline hover:no-underline underline-offset-3 hover:text-blue-500"
-                    />
+                      className="text-primary hover:text-blue-500 group/link"
+                    >
+                      {props.children}{" "}
+                      <ChevronRightIcon
+                        className="w-3.5 h-3.5 inline-block group-hover/link:translate-x-1 transition-transform duration-100"
+                        strokeWidth={2.5}
+                      />
+                    </a>
                   );
                 },
                 ol({ node, ...props }) {
                   const { children, ...rest } = props;
 
-                  const areChildrenImagesOnly = React.Children.toArray(
-                    children
-                  ).every((child) => {
-                    if (React.isValidElement(child) && child.type === "ol") {
-                      // If child is an <ol> element, iterate through its children
-                      return React.Children.toArray(child.props.children).every(
-                        (li) => {
-                          // Check if each child of <ol> is an <li> element
-                          if (React.isValidElement(li) && li.type === "li") {
-                            // Check if each <li> element contains only <img> elements
-                            return React.Children.toArray(
-                              li.props.children
-                            ).every((img) => {
-                              return (
-                                React.isValidElement(img) && img.type === "img"
-                              );
-                            });
-                          }
-                          // If child of <ol> is not an <li>, return false
-                          return false;
-                        }
-                      );
-                    }
-                    // If child is not an <ol> element, return true
-                    return true;
-                  });
-
-                  console.log("areChildrenImages", areChildrenImagesOnly);
+                  const areChildrenImagesOnly = false;
 
                   if (areChildrenImagesOnly) {
                     return (
@@ -184,29 +169,39 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
                     );
                   }
 
-                  return <ol {...rest}>{children}</ol>;
+                  return (
+                    <ol {...rest} className="flex flex-col gap-2 ">
+                      {children}
+                    </ol>
+                  );
+                },
+                li({ node, ...props }) {
+                  return <li {...props} className="list-disc list-outside" />;
                 },
                 img({ node, ...props }) {
                   return (
-                    <Image
-                      width={
-                        props?.width
-                          ? Number(props?.width)
-                          : props?.height
-                          ? Number(props?.height)
-                          : 200
-                      }
-                      height={
-                        props?.height
-                          ? Number(props?.height)
-                          : props?.width
-                          ? Number(props?.width)
-                          : 200
-                      }
-                      src={props?.src || ""}
-                      className="!w-full h-72 !max-w-full object-cover rounded-sm border border-border"
-                      alt={props?.alt || "Image from Search Results"}
-                    />
+                    <SmartImage>
+                      <Image
+                        width={
+                          props?.width
+                            ? Number(props?.width)
+                            : props?.height
+                            ? Number(props?.height)
+                            : 200
+                        }
+                        height={
+                          props?.height
+                            ? Number(props?.height)
+                            : props?.width
+                            ? Number(props?.width)
+                            : 200
+                        }
+                        title={props?.alt || "Image from Search Results"}
+                        src={props?.src || ""}
+                        className="!w-64 sm:!w-max h-64 object-cover"
+                        alt={props?.alt || "Image from Search Results"}
+                      />
+                    </SmartImage>
                   );
                 },
                 code(props) {
@@ -311,15 +306,10 @@ export default function Bubble({ from, body, name, displayName }: BubbleProps) {
 
 interface BubbleWritingProps {
   assistant: keyof typeof openai_models;
-  action: "typing" | "generating" | "searching";
-  object: string;
+  action: ThinkingType;
 }
 
-export const BubbleWriting = ({
-  assistant,
-  action,
-  object,
-}: BubbleWritingProps) => {
+export const BubbleWriting = ({ assistant, action }: BubbleWritingProps) => {
   return (
     <motion.div
       className="flex-1 justify-end"
@@ -327,17 +317,18 @@ export const BubbleWriting = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
     >
-      <div className="flex flex-col gap-1 items-center py-4 mt-2">
-        <div className="inline-block ml-1 w-8 h-3 aspect-square rounded-full bg-primary animate-shrinking transition-transform" />
+      <div className="flex flex-col gap-2 items-center py-4 mt-2">
         <div className="flex items-center justify-center text-muted-foreground">
           <span className="text-sm">
-            <span className="font-medium text-foreground">
-              {openai_models[assistant].display_name}
+            <span className="capitalize">
+              {action ? action.doing : "Thinking"}
             </span>{" "}
-            is {action}
-            <span className="font-medium">{object}</span>
+            <span className="font-medium capitalize">
+              {action ? action?.on : undefined}
+            </span>
           </span>
         </div>
+        <div className="inline-block ml-1 w-8 h-2 aspect-square rounded-full bg-primary animate-shrinking transition-transform" />
       </div>
     </motion.div>
   );

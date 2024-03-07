@@ -6,6 +6,8 @@ import Bubble, { BubbleWriting } from "@/components/bubble";
 import InputBar from "@/components/input-bar";
 import Toolbar from "@/components/toolbar";
 
+import Rive from "@rive-app/react-canvas";
+
 import { Message, useMessages } from "@/context/messages";
 import { openai_models } from "@/lib/models";
 import dayjs from "dayjs";
@@ -20,6 +22,8 @@ import FavoritesDrawer from "@/components/favorites-drawer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import AssistantSwitchTabs from "@/components/assistant-switch.tabs";
+import AnimatedAvatar from "@/components/animated-avatar";
+import AnimatedRiveAvatar from "@/components/animated-rive-avatar";
 
 export default function Home() {
   const { assistant, setAssistant } = useAssistant();
@@ -145,37 +149,7 @@ export default function Home() {
             }}
           >
             <div className="flex select-none flex-col items-center justify-center pb-4 pt-6">
-              <motion.div
-                initial={{
-                  scale: 0.6,
-                  opacity: 0,
-                }}
-                animate={{
-                  scale: 1,
-                  opacity: 1,
-                  transition: {
-                    type: "spring",
-                    bounce: 0.5,
-                  },
-                }}
-                drag
-                dragConstraints={{
-                  top: -20,
-                  bottom: 20,
-                  left: -20,
-                  right: 20,
-                }}
-                dragElastic={0.05}
-                className="pointer-events-auto"
-                dragSnapToOrigin
-              >
-                <Avatar className="pointer-events-none h-20 w-20">
-                  <AvatarImage src={openai_models[assistant].avatar} />
-                  <AvatarFallback>
-                    {openai_models[assistant].display_name[0]}
-                  </AvatarFallback>
-                </Avatar>
-              </motion.div>
+              <AnimatedAvatar />
             </div>
             <AnimatePresence>
               (
@@ -199,7 +173,7 @@ export default function Home() {
                     thread?.id &&
                     openai_models[assistant].display_name}
                   {params.id && !thread?.id && "Loading the chat..."}
-                  {!params.id && "Ready to chat?"}
+                  {!params.id && "What's on your mind?"}
                 </motion.h1>
                 <motion.p
                   initial={{ opacity: 0, y: 10 }}
@@ -209,7 +183,7 @@ export default function Home() {
                   className="text-muted-foreground max-w-60 text-center text-sm"
                 >
                   {!params.id &&
-                    `Talk with ${openai_models[assistant].display_name} by typing
+                    `Chat with ${openai_models[assistant].display_name} by typing
                     a message.`}
                   {params.id &&
                     !thread?.id &&
@@ -264,11 +238,7 @@ export default function Home() {
             </AnimatePresence>
             <AnimatePresence>
               {isWriting && (
-                <BubbleWriting
-                  assistant={assistant}
-                  action="typing"
-                  object=""
-                />
+                <BubbleWriting assistant={assistant} action={isWriting} />
               )}
             </AnimatePresence>
           </motion.div>
