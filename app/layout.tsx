@@ -70,7 +70,7 @@ export default function RootLayout({
           inter.className,
           "h-dvh fixed top-0 left-0 w-screen overflow-y-none"
         )}
-        vaul-drawer-wrapper
+        vaul-drawer-wrapper="true"
       >
         <Providers>{children}</Providers>
         <Analytics />
