@@ -51,13 +51,7 @@ export default function MaintenancePage() {
 
         <div className="relative">
           <Button onClick={checkMaintenance} className="relative z-10 gap-0.5">
-            <motion.span
-              animate={{ rotate: status === "loading" ? 360 : 0 }}
-              transition={{
-                duration: 1,
-                ease: "easeInOut",
-              }}
-            >
+            <motion.span>
               <UpdateIcon width={20} />
             </motion.span>
             Refresh
