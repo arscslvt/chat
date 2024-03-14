@@ -6,7 +6,7 @@ export async function GET(request: NextRequest) {
 
   if (maintenance === true) {
     return new Response("We're under maintenance.", { status: 503 });
-  } else {
-    return new Response("OK", { status: 200 });
   }
+
+  return new Response("OK", { status: 200 });
 }
