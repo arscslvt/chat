@@ -68,7 +68,7 @@ export default function RootLayout({
       <body
         className={cx(
           inter.className,
-          "h-dvh fixed top-0 left-0 w-screen overflow-y-none"
+          "h-dvh fixed top-0 left-0 w-screen overflow-y-none !bg-background"
         )}
         vaul-drawer-wrapper="true"
       >
