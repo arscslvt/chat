@@ -12,10 +12,6 @@ function AutoScroller({ children }: { children: ReactNode }) {
       if (box.current.scrollLeft >= box.current.scrollWidth - 10) {
         box.current.scrollLeft = 0;
       }
-
-      if (box.current.scrollLeft === 0) {
-        box.current.scrollLeft = box.current.scrollWidth;
-      }
     }
   };
 
