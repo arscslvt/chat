@@ -42,10 +42,19 @@ interface Props {
   tooltip?: string | React.ReactNode;
   subtitle?: string | React.ReactNode;
 
+  leading?: React.ReactNode | false;
+  trailing?: React.ReactNode | false;
+
   isFavorite?: boolean;
 }
 
-export default function Toolbar({ title, tooltip, subtitle }: Props) {
+export default function Toolbar({
+  title,
+  tooltip,
+  subtitle,
+  leading,
+  trailing,
+}: Props) {
   const { theme, setTheme } = useTheme();
   const [isFavorite, setIsFavorite] = React.useState<boolean>(false);
 
@@ -100,19 +109,29 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
         />
       ) : null}
       <div className="flex-1 flex justify-start items-center gap-3">
-        <Drawer shouldScaleBackground>
-          <DrawerTrigger asChild>
-            <span>
-              <Button variant={"ghost"} className="hidden sm:block">
-                {"Learn more"}
-              </Button>
-              <Button variant={"secondary"} size={"icon"} className="sm:hidden">
-                <QuestionMarkIcon width={22} />
-              </Button>
-            </span>
-          </DrawerTrigger>
-          <LearnMoreDrawer />
-        </Drawer>
+        {leading !== false ? (
+          leading ? (
+            leading
+          ) : (
+            <Drawer shouldScaleBackground>
+              <DrawerTrigger asChild>
+                <span>
+                  <Button variant={"ghost"} className="hidden sm:block">
+                    {"Learn more"}
+                  </Button>
+                  <Button
+                    variant={"secondary"}
+                    size={"icon"}
+                    className="sm:hidden"
+                  >
+                    <QuestionMarkIcon width={22} />
+                  </Button>
+                </span>
+              </DrawerTrigger>
+              <LearnMoreDrawer />
+            </Drawer>
+          )
+        ) : null}
 
         {thread?.id && (
           <Button onClick={handleFavorite} size={"icon"} variant={"secondary"}>
@@ -180,16 +199,26 @@ export default function Toolbar({ title, tooltip, subtitle }: Props) {
             </DropdownMenuCheckboxItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Tooltip>
-          <TooltipContent align="center" side="left">
-            Start a new thread
-          </TooltipContent>
-          <TooltipTrigger asChild>
-            <Button size={"icon"} variant={"secondary"} onClick={handleNewChat}>
-              <PlusIcon className="w-5 h-5" />
-            </Button>
-          </TooltipTrigger>
-        </Tooltip>
+        {trailing !== false ? (
+          trailing ? (
+            trailing
+          ) : (
+            <Tooltip>
+              <TooltipContent align="center" side="left">
+                Start a new thread
+              </TooltipContent>
+              <TooltipTrigger asChild>
+                <Button
+                  size={"icon"}
+                  variant={"secondary"}
+                  onClick={handleNewChat}
+                >
+                  <PlusIcon className="w-5 h-5" />
+                </Button>
+              </TooltipTrigger>
+            </Tooltip>
+          )
+        ) : null}
       </div>
     </div>
   );
