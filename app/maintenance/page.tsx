@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import api from "@/lib/api/config";
 import { UpdateIcon } from "@radix-ui/react-icons";
@@ -16,27 +16,47 @@ export default function MaintenancePage() {
     "online" | "maintenance" | "offline" | "loading"
   >("loading");
 
+  const availableEmojis = useMemo(
+    () => ["😵‍💫", "💀", "🛠", "🤕", "🧰", "🚧", "💔", "😭"],
+    []
+  );
+
+  const [emojis, setEmojis] = useState<Array<(typeof availableEmojis)[number]>>(
+    []
+  );
+
+  const generateEmojis = useCallback(() => {
+    const randomEmoji =
+      availableEmojis[Math.floor(Math.random() * availableEmojis.length)];
+
+    setEmojis((prevEmojis) => [...prevEmojis, randomEmoji]);
+
+    const timeout = setTimeout(() => {
+      setEmojis((prevEmojis) => prevEmojis.slice(0, -1));
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [availableEmojis]);
+
   const checkMaintenance = useCallback(async () => {
     setStatus("loading");
 
     try {
-      const maintenance = await api.get("/status");
-      console.log(maintenance);
+      await api.get("/status");
 
       setStatus("online");
       router.replace("/");
     } catch (e: any) {
       console.log(e?.request?.status);
 
-      if (e?.request?.status === 503) return setStatus("maintenance");
+      if (e?.request?.status === 503) {
+        generateEmojis();
+        return setStatus("maintenance");
+      }
 
       setStatus("offline");
     }
-  }, [router]);
-
-  useEffect(() => {
-    checkMaintenance();
-  }, [checkMaintenance]);
+  }, [router, generateEmojis]);
 
   return (
     <div className="flex-1 flex justify-center items-center">
@@ -56,30 +76,22 @@ export default function MaintenancePage() {
             </motion.span>
             Refresh
           </Button>
-          <AnimatePresence>
-            {status !== "loading" && (
-              <motion.div
-                className="absolute top-0 left-0 flex w-full justify-center h-full"
-                initial={{ opacity: 0, y: 5 }}
-                animate={{
-                  opacity: [0, 1, 1, 0],
-                  y: [5, -25, -25, 5],
-                  scale: [1, 1.4, 1.4, 1],
-                }}
-                exit={{ opacity: 0, y: 5 }}
-                transition={{
-                  duration: 4,
-                  times: [0, 0.7, 0.1],
-                  ease: "backInOut",
-                }}
-              >
-                {status === "maintenance" &&
-                  ["😢", "🚧", "🤕", "💔", "🧰"][Math.floor(Math.random() * 5)]}
-                {status === "offline" && "☠️"}
-                {status === "online" && "🥳"}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="flex justify-center w-full">
+            <AnimatePresence>
+              {emojis.map((emoji, index) => (
+                <motion.span
+                  key={index}
+                  initial={{ scale: 0.8, y: 0 }}
+                  animate={{ scale: 1.4, y: -28 }}
+                  exit={{ scale: 0.8, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className={cx`absolute top-0 text-lg`}
+                >
+                  {emoji}
+                </motion.span>
+              ))}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </div>
