@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+
+@layer components {
+  .as-scroller {
+    max-width: 100%;
+    overflow: clip;
+    overflow-x: auto;
+
+    mask: linear-gradient(
+      90deg,
+      transparent 0%,
+      #fff 5%,
+      #fff 95%,
+      transparent 100%
+    );
+  }
+  .as-scroller[data-animated="true"] {
+    overflow: clip;
+  }
+
+  .as-scroller-inner {
+    display: flex;
+    @apply gap-2;
+
+    --scroller-inner-gap: theme(gap.2);
+  }
+
+  .as-scroller[data-animated="true"] .as-scroller-inner {
+    width: max-content;
+    animation: animation-scroll var(--scroller-duration, 40s) linear infinite;
+    animation-play-state: paused;
+  }
+
+  .as-scroller[data-animated="true"]
+    .as-scroller-inner[data-scrolling-active="true"] {
+    animation-play-state: running;
+  }
+
+  @keyframes animation-scroll {
+    to {
+      transform: translateX(calc(-50% - (var(--scroller-inner-gap) / 2)));
+    }
+  }
+}
