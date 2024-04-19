@@ -20,7 +20,7 @@ export const openai_models_list: {
     suggestedQueries: [
       "Tell me a story",
       "What is the best programming language?",
-      "Give me a good joke",
+      "Give me a good joke.",
       "How can I make a chocolate cake?",
     ],
     capabilities: ["Colloquial talking style", "Code interpretation"],
