@@ -4,7 +4,7 @@ import openai from "@/app/api/config/openai";
 import { NextResponse } from "next/server";
 import { Run } from "openai/resources/beta/threads/runs/runs.mjs";
 import { isLocal } from "@/lib/utils";
-import { FileObject } from "openai/resources/files.mjs";
+import { MessageCreateParams } from "openai/resources/beta/threads/messages.mjs";
 
 export async function POST(
   req: Request,
@@ -23,7 +23,7 @@ export async function POST(
   }: {
     message: Message["body"];
     assistantId: string;
-    files?: FileObject[];
+    files?: MessageCreateParams.Attachment[];
   } = await req.json();
 
   if (!message)
@@ -40,7 +40,7 @@ export async function POST(
     const msg = await openai.beta.threads.messages.create(threadId, {
       role: "user",
       content: message[0].text.value,
-      file_ids: files?.map((f) => f.id),
+      attachments: files,
     });
   } catch (e) {
     console.error("Error creating message: ", e);
@@ -48,10 +48,18 @@ export async function POST(
   }
 
   try {
-    const run: Run = await openai.beta.threads.runs.create(threadId, {
+    const run = await openai.beta.threads.runs.create(threadId, {
       assistant_id: assistantId,
+      stream: true,
     });
 
+    for await (const event of run) {
+      return new Response(JSON.stringify(event), {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
     // isLocal && console.log("Run created: ", run);
 
     return NextResponse.json(run);

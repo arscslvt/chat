@@ -8,16 +8,28 @@ export default async function sendMessage(
   assistantId: string,
   files?: FileObject[]
 ) {
-  const res = await api
-    .post(`/thread/${threadId}/message`, {
-      message: body,
-      assistantId,
-      files,
-    })
-    .catch((e) => {
-      console.error(e);
-      throw new Error("Error sending message");
+  try {
+    const res = await api
+      .post(
+        `/thread/${threadId}/message`,
+        {
+          message: body,
+          assistantId,
+          files,
+        },
+        { responseType: "stream" }
+      )
+      .catch((e) => {
+        console.error(e);
+        throw new Error("Error sending message");
+      });
+
+    res.data.on("data", (chunk: any) => {
+      console.log(chunk.toString());
     });
 
-  return res.data;
+    return res;
+  } catch {
+    throw new Error("Error sending message");
+  }
 }
