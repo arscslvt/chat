@@ -173,71 +173,71 @@ export default function MessagesProvider({
 
   const { references } = useReferences();
 
-  useEffect(() => {
-    const retrieveRun = async (
-      threadId: Thread["id"],
-      runId: string
-    ): Promise<"pending" | "satisfied" | "cancelled"> => {
-      if (run === false) return "cancelled";
+  // useEffect(() => {
+  //   const retrieveRun = async (
+  //     threadId: Thread["id"],
+  //     runId: string
+  //   ): Promise<"pending" | "satisfied" | "cancelled"> => {
+  //     if (run === false) return "cancelled";
 
-      const _run = await apiGetRun(threadId, runId).catch((e) => {
-        console.log("Error getting run: ", e);
-      });
+  //     const _run = await apiGetRun(threadId, runId).catch((e) => {
+  //       console.log("Error getting run: ", e);
+  //     });
 
-      if (
-        _run?.status === "cancelling" ||
-        _run?.status === "failed" ||
-        _run?.status === "cancelled" ||
-        _run?.status === "expired"
-      ) {
-        console.log("[RUN] Failed: ", _run);
-        setRunning(false);
-        return "cancelled";
-      }
+  //     if (
+  //       _run?.status === "cancelling" ||
+  //       _run?.status === "failed" ||
+  //       _run?.status === "cancelled" ||
+  //       _run?.status === "expired"
+  //     ) {
+  //       console.log("[RUN] Failed: ", _run);
+  //       setRunning(false);
+  //       return "cancelled";
+  //     }
 
-      console.log("[RUN] Processing: ", _run);
+  //     console.log("[RUN] Processing: ", _run);
 
-      if (_run?.status === "completed") {
-        await getThread(threadId).catch((e) => {
-          console.log("Error updating thread messages: ", e);
-        });
+  //     if (_run?.status === "completed") {
+  //       await getThread(threadId).catch((e) => {
+  //         console.log("Error updating thread messages: ", e);
+  //       });
 
-        const inputRef = references["messageInput"];
-        if (inputRef.current) {
-          inputRef.current.focus();
-        }
+  //       const inputRef = references["messageInput"];
+  //       if (inputRef.current) {
+  //         inputRef.current.focus();
+  //       }
 
-        setRunning(false);
-        return "satisfied";
-      }
+  //       setRunning(false);
+  //       return "satisfied";
+  //     }
 
-      return "pending";
-    };
+  //     return "pending";
+  //   };
 
-    const timer = new Promise((resolve) => setTimeout(resolve, 1500));
+  //   const timer = new Promise((resolve) => setTimeout(resolve, 1500));
 
-    if (run && thread) {
-      const check = async () => {
-        console.log("Checking run...: ", run);
+  //   if (run && thread) {
+  //     const check = async () => {
+  //       console.log("Checking run...: ", run);
 
-        if (!run) return;
+  //       if (!run) return;
 
-        const res = await retrieveRun(thread.id, run.id);
-        if (res === "cancelled") {
-          toast.error(
-            "Something went wrong with your request. Please try again later."
-          );
-          return;
-        }
+  //       const res = await retrieveRun(thread.id, run.id);
+  //       if (res === "cancelled") {
+  //         toast.error(
+  //           "Something went wrong with your request. Please try again later."
+  //         );
+  //         return;
+  //       }
 
-        if (res === "pending") await timer.then(check);
+  //       if (res === "pending") await timer.then(check);
 
-        return;
-      };
+  //       return;
+  //     };
 
-      check();
-    }
-  }, [run, thread, getThread, references]);
+  //     check();
+  //   }
+  // }, [run, thread, getThread, references]);
 
   const uploadFile = async (file: File) => {
     const formData = new FormData();
@@ -334,7 +334,7 @@ export default function MessagesProvider({
 
     const body = message.body;
 
-    const receivedMessage: Run = await apiSendMessage(
+    const receivedMessage = await apiSendMessage(
       body,
       _thread.id,
       assistantId,
@@ -344,6 +344,8 @@ export default function MessagesProvider({
       setIsWriting(false);
       throw new Error("Error sending message: ", e);
     });
+
+    console.log("Received message stream: ", receivedMessage);
 
     const files = file ? [file] : undefined;
 
@@ -357,7 +359,7 @@ export default function MessagesProvider({
       handleFavoriteUpdate(updatedThread);
     }
 
-    setRunning(receivedMessage);
+    // setRunning(receivedMessage as unknown as Run);
 
     console.log("Received message: ", receivedMessage);
   };

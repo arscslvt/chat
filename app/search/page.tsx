@@ -1,11 +1,9 @@
-import React, { ReactNode, useEffect, useRef } from "react";
-
+import AutoScroller from "@/components/search/autoscroller";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CameraIcon, MagnifyingGlassIcon } from "@radix-ui/react-icons";
-
-import InfiniteScoller from "@/components/search/infinite-scroller";
+import React, { ReactNode, useEffect, useRef } from "react";
 
 export default function SearchPage() {
   return (
@@ -37,40 +35,44 @@ export default function SearchPage() {
       </div>
 
       <div className="pb-6 flex flex-col gap-3">
-        <InfiniteScoller className="px-6" duration={60}>
-          <Button size={"sm"} variant={"outline"}>
-            😶 How many times does the word {'"chat"'} appear on the web?
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            🧑‍💻 What is the most popular programming language?
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            💬 Where can I find the best AI chatbot?
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            🐻 Do a bear have a tail?
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            🐢 Make a reaserch about turtles
-          </Button>
-        </InfiniteScoller>
-        <InfiniteScoller className="px-6">
-          <Button size={"sm"} variant={"outline"}>
-            🧠 Define quantum computing
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            ⛈️ Weather forecast for Tokyo
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            🎂 How to bake a cake?
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            🗽 Jobs near New York
-          </Button>
-          <Button size={"sm"} variant={"outline"}>
-            ⚽️ Who won the 2022 World Cup?
-          </Button>
-        </InfiniteScoller>
+        <AutoScroller>
+          <div className="px-6 max-w-full flex gap-2">
+            <Button size={"sm"} variant={"outline"}>
+              😶 How many times does the word {'"chat"'} appear on the web?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🧑‍💻 What is the most popular programming language?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              💬 Where can I find the best AI chatbot?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🐻 Do a bear have a tail?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🐢 Make a reaserch about turtles
+            </Button>
+          </div>
+        </AutoScroller>
+        <AutoScroller>
+          <div className="px-6 max-w-full flex gap-2">
+            <Button size={"sm"} variant={"outline"}>
+              🌱 Describe the process of photosynthesis
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🌍 What is the capital of France?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🌊 What is the deepest ocean?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🌋 What is the largest volcano in the world?
+            </Button>
+            <Button size={"sm"} variant={"outline"}>
+              🌠 What is the closest star to Earth?
+            </Button>
+          </div>
+        </AutoScroller>
       </div>
     </div>
   );

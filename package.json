@@ -47,7 +47,7 @@
     "next": "14.1.0",
     "next-auth": "^4.24.6",
     "next-themes": "^0.2.1",
-    "openai": "^4.25.0",
+    "openai": "^4.38.0",
     "react": "^18",
     "react-dom": "^18",
     "react-markdown": "^9.0.1",
@@ -60,7 +60,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.8.9",
-    "vercel": "^33.5.5"
+    "vercel": "^34.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",
