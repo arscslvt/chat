@@ -1,6 +1,5 @@
 import { Message } from "@/context/messages";
 import api from "../config";
-import { ThreadMessage } from "openai/resources/beta/threads/messages/messages.mjs";
 
 export default async function getMessages(
   threadId: string
@@ -14,7 +13,7 @@ export default async function getMessages(
 
   console.log("Retrieved messages: ", body);
 
-  let messages: Message[] = body.data.map((message: ThreadMessage) => ({
+  let messages: Message[] = body.data.map((message: any) => ({
     from: message.role === "user" ? "sender" : "bot",
     body: message.content,
     name: message.role === "user" ? "You" : "Bot",
