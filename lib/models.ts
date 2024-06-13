@@ -1,7 +1,7 @@
 interface Model {
   id: string;
   display_name: string;
-  gpt: "gpt-3.5" | "gpt-4";
+  gpt: "gpt-3.5" | "gpt-4" | "gpt-4o";
   description: string;
   suggestedQueries?: string[];
   capabilities?: string[];
@@ -30,7 +30,7 @@ export const openai_models_list: {
   rose: {
     id: "asst_DxgR8kIjsWatEp6ot7g4OioJ",
     display_name: "Rose",
-    gpt: "gpt-4",
+    gpt: "gpt-4o",
     description:
       "Chatbot suited for colloquial conversations. More advanced than Lucas.",
     suggestedQueries: [
@@ -59,19 +59,25 @@ export const openai_models_list: {
   //     "Boost user engagement?",
   //   ],
   // },
-  // alex: {
-  //   id: "asst_5axiTFCgM6pSzCm39ddnpGjk",
-  //   display_name: "Alex",
-  //   gpt: "gpt-4",
-  //   description:
-  //     "Alex is an agent suited for Next.js coding and design topics.",
-  //   suggestedQueries: [
-  //     "How to make a Next.js app",
-  //     "How to use Tailwind CSS in Next.js",
-  //     "How to call APIs",
-  //     "How to enable TypeScript",
-  //   ],
-  // },
+  alex: {
+    id: "asst_5axiTFCgM6pSzCm39ddnpGjk",
+    display_name: "Alex",
+    gpt: "gpt-4o",
+    description:
+      "Alex is an agent suited for Next.js coding and design topics.",
+    suggestedQueries: [
+      "How to make a Next.js app",
+      "How to use Tailwind CSS in Next.js",
+      "How to call APIs",
+      "How to enable TypeScript",
+    ],
+    capabilities: [
+      "Next.js coding",
+      "Next.js Docs and API",
+      "Design patterns of Next.js",
+    ],
+    avatar: "/assets/bots/alex/avatar.jpg",
+  },
   // steve: {
   //   id: "asst_NyMIGJVIRpZDdHTCq1QBTCRH",
   //   display_name: "Steve",
